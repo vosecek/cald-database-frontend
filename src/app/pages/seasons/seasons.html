@@ -1,0 +1,11 @@
+<div class="row">
+    <div class="col-xl-12">
+        <ba-card title="Sezony" baCardClass="with-scroll" *ngIf='seasons'>
+            <ul *ngIf='!season'>
+                <li *ngFor="let season of seasons|order:['-name']">
+                    <a [routerLink]="['/app/seasons',season.name]">{{season.name}}</a>
+                </li>
+            </ul>
+        </ba-card>
+    </div>
+</div>

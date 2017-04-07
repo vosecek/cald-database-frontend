@@ -1,0 +1,13 @@
+@import "~normalize.css";
+@import "theme/theme";
+select.form-control[multiple] {
+    overflow-y: scroll;
+}
+
+.fr {
+    float: right;
+}
+
+.fl {
+    float: left;
+}

@@ -1,0 +1,16 @@
+<div class="page-top clearfix" baScrollPosition maxHeight="50" (scrollChange)="scrolledChanged($event)" [ngClass]="{scrolled: isScrolled}">
+    <a routerLink="/pages/dashboard" class="al-logo clearfix">ČALD</a>
+    <a href (click)="toggleMenu()" class="collapse-menu-link ion-navicon"></a>
+    <div class="user-profile clearfix">
+        <div class="dropdown al-user-profile">
+            <a class="profile-toggle-link dropdown-toggle" id="user-profile-dd" data-toggle="dropdown" aria-expanded="false">
+                <img src='{{("disc"|baProfilePicture)}}'>
+            </a>
+            <ul class="dropdown-menu top-dropdown-menu profile-dropdown" aria-labelledby="user-profile-dd">
+                <li class="dropdown-item"><i class="dropdown-arr"></i></li>
+                <li class="dropdown-item"><a [routerLink]="['/app/user']"><i class="fa fa-user"></i>Můj účet</a></li>
+                <li class="dropdown-item"><a [routerLink]="['/login']" class="signout" (click)='logout()'><i class="fa fa-power-off"></i>Odhlásit</a></li>
+            </ul>
+        </div>
+    </div>
+</div>

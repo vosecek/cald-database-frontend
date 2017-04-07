@@ -1,0 +1,40 @@
+<div class="row">
+    <div class='col-xl-12'>
+        <ba-card title="{{tournament.name}}" baCardClass="with-scroll">
+            <p>Místo konání: {{tournament.location}}</p>
+            <p>Datum: {{tournament.date|date}}</p>
+        </ba-card>
+    </div>
+</div>
+<div class="row">
+    <div [ngClass]='colClass' *ngFor='let division of divisions'>
+        <div *ngIf='division.rosters'>
+            <ba-card title="{{division.division_id|division}} ({{division.rosters.length}})" baCardClass="with-scroll">
+                <div *ngIf='division.userRosters.length>0'>
+                    <h4>Moje týmy</h4>
+                    <div *ngFor='let team of division.userRosters' style='display: inline;'>
+                        <div *ngFor='let r of team;let i = index;' style='display: inline;'>
+                            <button (click)="roster(r)" class="btn btn-info btn-with-icon"><i class="ion-edit"></i>{{r.team_id|team}} {{i|teammark}}</button>
+                        </div>
+                    </div>
+                    <div style='margin-top: .5em;'>
+                        <div *ngFor='let team of rights' style='display: inline;'>
+                            <button (click)="roster(division,team)" class="btn btn-success btn-with-icon"><i class="ion-plus"></i>Přidat tým {{team|team}}</button>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <h4>Přihlášené týmy</h4>
+                <ul>
+                    <li *ngFor="let roster of division.rosters|order:['name']">
+                        <a style="cursor:pointer;" (click)="roster.hide = !roster.hide">{{roster.name}}</a> <span *ngIf='roster.players'>({{roster.players.length}})</span>
+                        <ul [hidden]='roster.hide'>
+                            <li *ngFor="let player of roster.players|order:['name']">{{player.name}}</li>
+                        </ul>
+                    </li>
+                </ul>
+            </ba-card>
+        </div>
+    </div>
+</div>
+<!-- |player:id -->

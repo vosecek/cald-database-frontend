@@ -1,0 +1,9 @@
+<div>
+    <div *ngIf="team">
+        <h2>{{team.name}}</h2>
+        <p>Celkový počet členů oddílu: {{players?.length}}</p>
+    </div>
+    <ba-card title="Hráči týmu" baCardClass="with-scroll">
+        <ng2-smart-table [settings]="settings" [source]="source" (onSave)="createPlayer($event)" (createConfirm)="createPlayer($event)" (editConfirm)="editPlayer($event)"></ng2-smart-table>
+    </ba-card>
+</div>

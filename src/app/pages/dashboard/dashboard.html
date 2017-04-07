@@ -1,0 +1,21 @@
+<div class="row">
+    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div *ngFor="let tournament of tournaments|order:['-name']">
+            <ba-card title="{{tournament.name}}" baCardClass="with-scroll">
+                <p>{{tournament.location}}, {{tournament.date|date}}</p>
+                <div *ngFor='let division of tournament.divisions' style='margin-bottom: 1em;'>
+                    <h3>{{division.division_id|division}}</h3>
+                    <div *ngFor='let team of division.rosters;let team_id = index;' style='display:inline;'>
+                        <div *ngFor='let r of team;let i = index;' style='display:inline;'>
+                            <button (click)="roster(r)" class="btn btn-info btn-with-icon"><i class="ion-edit"></i>{{r.team_id|team}} {{i|teammark}}</button>
+                        </div>
+                    </div>
+                    <div style='margin-top: .5em;'>
+                        <div *ngFor='let team of rights' style='display: inline;'>
+                            <button (click)="roster(division,team)" class="btn btn-success btn-with-icon"><i class="ion-plus"></i>Přidat tým {{team|team}}</button>
+                        </div>
+                    </div>
+                </div>
+            </ba-card>
+        </div>
+    </div>

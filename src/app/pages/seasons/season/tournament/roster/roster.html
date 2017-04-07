@@ -1,0 +1,59 @@
+<div class="row">
+    <div class='col-xl-6'>
+        <ba-card title="{{teamMark}} - soupiska" baCardClass="with-scroll">
+            <div class='col-xl-6'>
+                <h4>Muži</h4>
+                <div *ngFor='let player of players2roster|order:["last_name"]|sex:"male"' class='roster'>
+                    <button (click)='remove(player)' class='btn btn-default btn-with-icon btn-xs'><i class='ion-trash-a'></i> {{player.id|player}} </button>
+                </div>
+            </div>
+            <div class='col-xl-6'>
+                <h4>Ženy</h4>
+                <div *ngFor='let player of players2roster|order:["last_name"]|sex:"female"' class='roster'>
+                    <button (click)='remove(player)' class='btn btn-default btn-with-icon btn-xs'><i class='ion-trash-a'></i> {{player.id|player}} </button>
+                </div>
+            </div>
+            <div class='col-xl-12'>
+                <div *ngIf='players2roster.length == 0'>Klik na jméno hráče v pravém sloupci přidá hráče do soupisky</div>
+                <hr />
+                <button class='btn btn-danger btn-raised fl' (click)='delete()'>Smazat tým z turnaje</button>
+                <button class='btn btn-success btn-raised fr' (click)='save()'>Uložit soupisku</button>
+            </div>
+        </ba-card>
+    </div>
+    <div class='col-xl-6'>
+        <ba-card title="Dostupní hráči" baCardClass="with-scroll">
+            <div class='row'>
+                <div class='col-xl-6'>
+                    <div class="form-group">
+                        <label for="selectedTeam">Hráči týmu</label>
+                        <select id='selectedTeam' class='form-control' (change)="loadTeam()" [(ngModel)]='selectedTeam'>
+                            <option *ngFor='let team of teams|order:["name"]' value='{{team.id}}'>{{team.name}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class='col-xl-6'>
+                    <div class="form-group">
+                        <label for="filterTeam">Hledat v týmu</label>
+                        <input id='filterTeam' class='form-control' [(ngModel)]='queryTeam' placeholder="jméno (alespoň 3 znaky)" />
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class='col-xl-6'>
+                <h4>Muži</h4>
+                <div *ngIf='(availablePlayers|filterPlayers:queryTeam|order:["last_name"]|sex:"male"|intersect:players2roster).length == 0'>žádní hráči</div>
+                <div *ngFor='let player of availablePlayers|filterPlayers:queryTeam|order:["last_name"]|sex:"male"|intersect:players2roster' class='roster'>
+                    <button (click)='add(player)' class='btn btn-default btn-with-icon btn-xs'><i class='ion-plus-circled'></i> {{player.id|player}} </button>
+                </div>
+            </div>
+            <div class='col-xl-6'>
+                <h4>Ženy</h4>
+                <div *ngIf='(availablePlayers|filterPlayers:queryTeam|order:["last_name"]|sex:"female"|intersect:players2roster).length == 0'>žádní hráči</div>
+                <div *ngFor='let player of availablePlayers|filterPlayers:queryTeam|order:["last_name"]|sex:"female"|intersect:players2roster' class='roster'>
+                    <button (click)='add(player)' class='btn btn-default btn-with-icon btn-xs'><i class='ion-plus-circled'></i> {{player.id|player}} </button>
+                </div>
+            </div>
+        </ba-card>
+    </div>
+</div>

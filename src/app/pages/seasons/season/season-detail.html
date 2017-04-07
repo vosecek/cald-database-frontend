@@ -1,0 +1,13 @@
+<div class="row">
+    <div class="col-xl-12">
+        <ba-card title="{{season.name}}" baCardClass="with-scroll" *ngIf='tournaments'>
+            <ul>
+                <li *ngFor="let tournament of tournaments">
+                    <a [routerLink]="['/app/seasons',season.name, tournament.id]">{{tournament.name}}</a>
+                    <br />
+                    <small>{{tournament.date|date}}, {{tournament.league_name}}, {{tournament.division_name}}</small>
+                </li>
+            </ul>
+        </ba-card>
+    </div>
+</div>

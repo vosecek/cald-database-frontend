@@ -1,0 +1,143 @@
+<div class="row">
+    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <button type="submit" class="btn btn-primary" (click)="tournament()">Správa turnajů</button>
+        <button type="submit" class="btn btn-secondary" (click)="team()">Správa oddílů</button>
+        <button type="submit" class="btn btn-warning" (click)="user()">Správa uživatelů</button>
+    </div>
+</div>
+<hr />
+<!-- modal -->
+<div bsModal #modal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close" (click)="modal.hide()" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <div *ngIf='type=="user"'>
+                    <h4 *ngIf="userForm.get('id').value" class="modal-title">Úprava uživatele</h4>
+                    <h4 *ngIf="!userForm.get('id').value" class="modal-title">Vytvořit nového uživatele</h4>
+                </div>
+                <div *ngIf='type=="team"'>
+                    <h4 *ngIf="teamForm.get('id').value" class="modal-title">Úprava oddílu</h4>
+                    <h4 *ngIf="!teamForm.get('id').value" class="modal-title">Vytvořit nový oddíl</h4>
+                </div>
+                <div *ngIf='type=="tournament"'>
+                    <h4 *ngIf="tournamentForm.get('id').value" class="modal-title">Úprava turnaje</h4>
+                    <h4 *ngIf="!tournamentForm.get('id').value" class="modal-title">Vytvořit nový turnaj</h4>
+                </div>
+            </div>
+            <div class="modal-body">
+                <form *ngIf='type=="team"' [formGroup]="teamForm" novalidate (submit)="team(true)">
+                    <input type='hidden' formControlName='id' />
+                    <div class="form-group" [ngClass]='{"has-error":!teamForm.get("name").valid && teamForm.get("name").touched}'>
+                        <label for="name">Název</label>
+                        <input type="text" class="form-control" formControlName='name' id="name" placeholder="Název oddílu">
+                    </div>
+                    <div class="form-group" [ngClass]='{"has-error":!teamForm.get("founded_at").valid && teamForm.get("founded_at").touched}'>
+                        <label for="founded_at">Založeno</label>
+                        <input type="date" class="form-control" formControlName='founded_at' id="founded_at">
+                    </div>
+                    <div class="form-group" [ngClass]='{"has-error":!teamForm.get("city").valid && teamForm.get("city").touched}'>
+                        <label for="city">Město</label>
+                        <input type="text" class="form-control" formControlName='city' id="city" placeholder="Sídlí ve městě">
+                    </div>
+                    <div class="form-group" [ngClass]='{"has-error":!teamForm.get("www").valid && teamForm.get("www").touched}'>
+                        <label for="www">Web</label>
+                        <input type="text" class="form-control" formControlName='www' id="www" placeholder="http://">
+                    </div>
+                </form>
+                <form *ngIf='type=="user"' [formGroup]="userForm" novalidate (submit)="user(true)" autocomplete="off">
+                    <input type='hidden' formControlName='id' />
+                    <div class="form-group" [ngClass]='{"has-error":!userForm.get("email").valid && userForm.get("email").touched}' autocomplete="off">
+                        <label for="email">E-mail</label>
+                        <input type="text" class="form-control" formControlName='email' id="email">
+                    </div>
+                    <div class="form-group" [ngClass]='{"has-error":!userForm.get("password").valid && userForm.get("password").touched}'>
+                        <label for="password">Heslo</label>
+                        <input type="text" class="form-control" formControlName='password' id="password">
+                    </div>
+                    <div class="form-group" [ngClass]='{"has-error":!userForm.get("login").valid && userForm.get("login").touched}'>
+                        <label for="login">Přihlašovací jméno</label>
+                        <input type="text" class="form-control" formControlName='login' id="login" placeholder="agentXY">
+                    </div>
+                    <div class="form-group" [ngClass]='{"has-error":!userForm.get("teams").valid && userForm.get("teams").touched}'>
+                        <label for="division_ids">Oddíly (ctrl+click pro více oddílů)</label>
+                        <select multiple class="form-control" formControlName='teams' id="teams">
+                            <option *ngFor='let team of teamsOptions|order:["title"]' value='{{team.value}}'>{{team.title}}</option>
+                        </select>
+                    </div>
+                </form>
+                <form [formGroup]="tournamentForm" novalidate (submit)="tournament(true)" *ngIf='type=="tournament"'>
+                    <input type='hidden' formControlName='id' />
+                    <div class="row">
+                        <div class="col-xl-6">
+                            <div class="form-group" [ngClass]='{"has-error":!tournamentForm.get("name").valid && tournamentForm.get("name").touched}'>
+                                <label for="name">Název</label>
+                                <input type="text" class="form-control" formControlName='name' id="name" placeholder="Název turnaje">
+                            </div>
+                            <div class="form-group" [ngClass]='{"has-error":!tournamentForm.get("location").valid && tournamentForm.get("location").touched}'>
+                                <label for="location">Lokace</label>
+                                <input type="text" class="form-control" formControlName='location' id="location" placeholder="Lokace turnaje">
+                            </div>
+                        </div>
+                        <div class="col-xl-6">
+                            <div class="form-group" [ngClass]='{"has-error":!tournamentForm.get("date").valid && tournamentForm.get("date").touched}'>
+                                <label for="date">Datum</label>
+                                <input type="date" class="form-control" formControlName='date' id="date">
+                            </div>
+                            <div class="form-group" [ngClass]='{"has-error":!tournamentForm.get("duration").valid && tournamentForm.get("duration").touched}'>
+                                <label for="duration">Trvání (dny)</label>
+                                <input type="number" class="form-control" formControlName='duration' id="duration">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-4">
+                            <div class="form-group" [ngClass]='{"has-error":!tournamentForm.get("season_id").valid && tournamentForm.get("season_id").touched}'>
+                                <label for="season_id">Sezóna</label>
+                                <select class="form-control" formControlName='season_id' id="season_id">
+                                    <option *ngFor='let season of seasons|order:["name"]' value='{{season.id}}'>{{season.name}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-xl-4">
+                            <div class="form-group" [ngClass]='{"has-error":!tournamentForm.get("division_ids").valid && tournamentForm.get("division_ids").touched}'>
+                                <label for="division_ids">Divize</label>
+                                <select multiple="" class="form-control" formControlName='division_ids' id="division_ids">
+                                    <option *ngFor='let division of server.divisions|order:["name"]' value='{{division.id}}'>{{division.name}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-xl-4">
+                            <div class="form-group" [ngClass]='{"has-error":!tournamentForm.get("league_ids").valid && tournamentForm.get("league_ids").touched}'>
+                                <label for="league_ids">Liga</label>
+                                <select multiple="" class="form-control" formControlName='league_ids' id="league_ids">
+                                    <option *ngFor='let league of server.leagues|order:["name"]' value='{{league.id}}'>{{league.name}}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button *ngIf='type=="user"' [hidden]='sending' [disabled]='userForm.invalid' class="btn btn-primary confirm-btn" (click)="saveUser()">Uložit</button>
+                <button *ngIf='type=="team"' [hidden]='sending' [disabled]='teamForm.invalid' class="btn btn-primary confirm-btn" (click)="saveTeam()">Uložit</button>
+                <button *ngIf='type=="tournament"' [hidden]='sending' [disabled]='tournamentForm.invalid' class="btn btn-primary confirm-btn" (click)="saveTournament()">Uložit</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <ba-card title="Seznam uživatelů" baCardClass="with-scroll" *ngIf='type=="user"'>
+            <ng2-smart-table [settings]="settings.user" (create)="openUserForm($event,true)" (edit)="openUserForm($event)" [source]="source.user"></ng2-smart-table>
+        </ba-card>
+        <ba-card title="Seznam oddílů" baCardClass="with-scroll" *ngIf='type=="team"'>
+            <ng2-smart-table [settings]="settings.team" (create)="openTeamForm($event,true)" (edit)="openTeamForm($event)" [source]="source.team"></ng2-smart-table>
+        </ba-card>
+        <ba-card title="Seznam turnajů" baCardClass="with-scroll" *ngIf='type=="tournament"'>
+            <ng2-smart-table [settings]="settings.tournament" (delete)="deleteTournament($event)" (create)=" openTournamentForm($event,true) " (edit)="openTournamentForm($event) " [source]="source.tournament "></ng2-smart-table>
+        </ba-card>
+    </div>
+</div>

@@ -1,0 +1,37 @@
+<div class="row">
+    <div class="col-md-6">
+        <ba-card title="Účet Správce oddílu" baCardClass="with-scroll" *ngIf='user'>
+            <form [formGroup]="form" novalidate (submit)="send()">
+                <div class="form-group" [ngClass]='{"has-error":!form.get("email").valid}'>
+                    <label for="email">E-mail</label>
+                    <input autocomplete="off" type="email" class="form-control" formControlName='email' id="email" placeholder="Email">
+                </div>
+                <div class="form-group" [ngClass]='{"has-error":!form.get("login").valid}'>
+                    <label for="login">Přihlašovací jméno</label>
+                    <input autocomplete="off" type="text" class="form-control" formControlName='login' id="login" placeholder="Login">
+                </div>
+                <div formGroupName="passwords">
+                    <div class="form-group" [ngClass]='{"has-error":!form.get("passwords").valid}'>
+                        <label for="password">Změnit heslo</label>
+                        <input autocomplete="off" type="password" class="form-control" formControlName='password' id="password" placeholder="nové heslo">
+                    </div>
+                    <div class="form-group" [ngClass]='{"has-error":!form.get("passwords").valid}'>
+                        <label for="password2">Kontrola nového hesla</label>
+                        <input autocomplete="off" type="password" class="form-control" formControlName='password2' id="password2" placeholder="zadej stejné nové heslo">
+                    </div>
+                </div>
+                <button [hidden]='sending' [disabled]='form.invalid' type="submit" class="btn btn-success">Aktualizovat údaje</button>
+                <button [hidden]='!sending' type="button" class="btn btn-warning btn-with-icon"><i class='fa fa-spin fa-circle-o-notch'></i></button>
+            </form>
+        </ba-card>
+    </div>
+    <div class="col-md-6">
+        <ba-card title="Spravované oddíly" baCardClass="with-scroll" *ngIf='user'>
+            <ul>
+                <li *ngFor="let team of teams|order:['name']">
+                    <a [routerLink]="['/app/teams',team.id]">{{team.name}}</a>
+                </li>
+            </ul>
+        </ba-card>
+    </div>
+</div>

@@ -1,0 +1,29 @@
+.table-condensed {
+    tbody {
+        tr {
+            td {
+                input,
+                button {
+                    margin: .4em 0em;
+                    height: 2em;
+                }
+            }
+        }
+    }
+}
+
+.sex {
+    line-height: 20px;
+}
+
+.table-loading {
+    font-size: 3em;
+    td {
+        padding: 2em;
+    }
+}
+
+.addButton {
+    cursor: pointer;
+    font-size: 1.2em;
+}
