@@ -99,44 +99,65 @@ export class ServerService {
 
     public init(): Promise<any> {
         console.info('init');
-        return new Promise((resolve, reject) =>
-            this.get("list/division").subscribe(data => {
-                this.divisions = data;
-                console.info('division loaded, continue ...');
+        return Promise.all([
+            new Promise((resolve, reject) => {
                 this.get("list/tournament").subscribe(data => {
                     this.tournaments = data;
-                });
-
+                    resolve();
+                })
+            }),
+            new Promise((resolve, reject) => {
+                this.get("list/division").subscribe(data => {
+                    this.divisions = data;
+                    resolve();
+                })
+            }),
+            new Promise((resolve, reject) => {
                 this.get("list/league").subscribe(data => {
                     this.leagues = data;
-                    this.get("list/tournament_belongs_to_league_and_division").subscribe(data => {
-                        // , { extend: true }
-                        this.tournamentExtended = data;
-                        this.get("user/me").subscribe((val) => {
-                            this.user = val['user'];
-                            this.rights = [];
-                            let data = [];
-                            val['rights'].forEach(el => {
-                                this.rights.push(el.split(":"));
-                            });
-                            this.get("list/player").subscribe(data => {
-                                this.players = data;
-                                this.get("list/season").subscribe(data => {
-                                    this.seasons = data;
-                                    this.get("list/team").subscribe(data => {
-                                        this.teams = data;
-                                        resolve();
-                                    });
-                                });
-                            });
-                        });
+                    resolve();
+                })
+            }),
+            new Promise((resolve, reject) => {
+                this.get("list/tournament_belongs_to_league_and_division").subscribe(data => {
+                    this.tournamentExtended = data;
+                    resolve();
+                })
+            }),
+            new Promise((resolve, reject) => {
+                this.get("user/me").subscribe((val) => {
+                    this.user = val['user'];
+                    this.rights = [];
+                    let data = [];
+                    val['rights'].forEach(el => {
+                        this.rights.push(el.split(":"));
                     });
-                });
+                    resolve();
+                })
+            }),
+            new Promise((resolve, reject) => {
+                this.get("list/player").subscribe(data => {
+                    this.players = data;
+                    resolve();
+                })
+            }),
+            new Promise((resolve, reject) => {
+                this.get("list/season").subscribe(data => {
+                    this.seasons = data;
+                    resolve();
+                })
+            }),
+            new Promise((resolve, reject) => {
+                this.get("list/team").subscribe(data => {
+                    this.teams = data;
+                    resolve();
+                })
+            })]).then(val => {
+                console.log('loaded');
+                return true;
             }, err => {
                 console.log(err);
-                resolve();
-            })
-        );
+            });
     }
 
     public isAdmin(): boolean {
