@@ -30,6 +30,16 @@ export class LoginService {
     localStorage.setItem('agent', JSON.stringify(token));
   }
 
+  public isLogged(): boolean {
+    if(this.getToken()){
+      let token = this.getToken();
+      console.log(token);
+      return true;
+    }else{
+      return false;
+    }
+  }
+
   public getToken(): Token {
     return JSON.parse(localStorage.getItem('agent'));
   }

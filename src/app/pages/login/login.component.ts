@@ -28,7 +28,9 @@ export class Login {
     private router: Router,
     private server: ServerService
   ) {
-
+    if(this.loginService.isLogged()){
+      this.logged();
+    }
     this.form = fb.group({
       'username': ['', Validators.required],
       'password': ['', Validators.required]
