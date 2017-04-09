@@ -20,6 +20,8 @@ export class Login {
   private username: AbstractControl;
   private password: AbstractControl;
 
+  sending: boolean = false;
+
   constructor(
     fb: FormBuilder,
     private loginService: LoginService,
@@ -36,7 +38,7 @@ export class Login {
     this.password = this.form.get('password');
   }
 
-  logged():void {
+  logged(): void {
     this.errorMessage = '';
     this.router.navigate(['/dashboard']);
   }
@@ -48,11 +50,15 @@ export class Login {
   }
 
   onSubmit(): void {
+    this.sending = true;
     this.loginService.login(this.form.get('username').value, this.form.get('password').value).subscribe(
       token => {
         this.loginService.setToken(token);
         this.logged();
       },
-      error => this.invalid(error));
+      error => {
+        this.sending = false;
+        this.invalid(error);
+      });
   }
 }
