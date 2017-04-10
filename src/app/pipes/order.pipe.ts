@@ -1,9 +1,6 @@
 import {Pipe, PipeTransform } from '@angular/core';
 
-// , pure: false 
-// @Pipe()
-
-@Pipe({ name: 'order', pure: false })
+@Pipe({ name: 'order', pure: true })
 export class OrderBy implements PipeTransform {
 
 	static _orderByComparator(a: any, b: any): number {
@@ -22,6 +19,7 @@ export class OrderBy implements PipeTransform {
 	}
 
 	transform(input: any, [config = '+']): any {
+		console.log('order');
 		if (!Array.isArray(input)) return input;
 
 		if (!Array.isArray(config) || (Array.isArray(config) && config.length == 1)) {
