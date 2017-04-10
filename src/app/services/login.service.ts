@@ -33,7 +33,6 @@ export class LoginService {
   public isLogged(): boolean {
     if(this.getToken()){
       let token = this.getToken();
-      console.log(token);
       return true;
     }else{
       return false;

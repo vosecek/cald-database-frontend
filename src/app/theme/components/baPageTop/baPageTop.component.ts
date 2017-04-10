@@ -28,6 +28,7 @@ export class BaPageTop {
   }
 
   public logout() {
+    localStorage.removeItem('agent');
     this.router.navigate(['/login']);
   }
 

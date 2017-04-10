@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { CanLoad } from '@angular/router';
+import { CanActivate } from '@angular/router';
 import { ServerService } from '../../services/server.service';
 
 @Injectable()
-export class IsAdmin implements CanLoad {
+export class IsAdmin implements CanActivate {
 	constructor(private server: ServerService) { }
 
-	canLoad(): boolean {
+	canActivate(): Promise<boolean> {
 		return this.server.isAdmin();
 	}
 }

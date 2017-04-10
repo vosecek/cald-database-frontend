@@ -98,7 +98,7 @@ export class ServerService {
     }
 
     public init(): Promise<any> {
-        console.info('init');
+        console.info('init app data');
         return Promise.all([
             new Promise((resolve, reject) => {
                 this.get("list/tournament").subscribe(data => {
@@ -160,15 +160,41 @@ export class ServerService {
             });
     }
 
-    public isAdmin(): boolean {
-        let access = false;
+    public isAdminMenu(): boolean {
+        var access = false;
         this.rights.forEach(val => {
             if (val[0] == 'admin') {
                 access = true;
             }
         });
-
         return access;
+    }
+
+    public isAdmin(): Promise<boolean> {
+        var access = false
+        if (this.rights.length == 0) {
+            return new Promise((resolve, reject) => {
+                this.get("user/me").subscribe((val) => {
+                    val.rights.forEach(el => {
+                        el = el.split(":");
+                        if (el[0] == 'admin') {
+                            console.log('admin');
+                            resolve(true);
+                        }
+                    });
+                    resolve(false);
+                });
+            });
+        } else {
+            return new Promise((resolve, reject) => {
+                this.rights.forEach(val => {
+                    if (val[0] == 'admin') {
+                        resolve(true);
+                    }
+                });
+                resolve(false);
+            });
+        }
     }
 
     public getTournaments2league(id: string): TournamentExtended[] {

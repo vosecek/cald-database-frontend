@@ -91,9 +91,4 @@ export class BaMenu {
 
     return false;
   }
-
-  public logout(): void {
-    console.log('logout');
-    localStorage.removeItem('agent');
-  }
 }

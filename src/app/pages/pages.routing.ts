@@ -1,4 +1,4 @@
-import { Routes, RouterModule, CanLoad } from '@angular/router';
+import { Routes, RouterModule, CanActivate } from '@angular/router';
 import { Pages } from './pages.component';
 import { ModuleWithProviders, Injectable } from '@angular/core';
 
@@ -24,7 +24,7 @@ export const routes: Routes = [
       { path: 'user', loadChildren: 'app/pages/user/user.module#UserModule' },
       { path: 'seasons', loadChildren: 'app/pages/seasons/seasons.module#SeasonsModule' },
       { path: 'teams', loadChildren: 'app/pages/teams/teams.module#TeamsModule' },
-      { path: 'admin', loadChildren: 'app/pages/admin/admin.module#AdminModule', canLoad: [IsAdmin] }
+      { path: 'admin', loadChildren: 'app/pages/admin/admin.module#AdminModule', canActivate: [IsAdmin] }
     ]
   }
 ];
