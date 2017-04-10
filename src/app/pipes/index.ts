@@ -6,3 +6,4 @@ export * from './team-mark.pipe';
 export * from './sex.pipe';
 export * from './intersect.pipe';
 export * from './filter-players.pipe';
+export * from './season.pipe';
