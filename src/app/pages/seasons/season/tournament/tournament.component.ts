@@ -41,13 +41,13 @@ export class TournamentComponent {
 			this.router.navigateByUrl([this.router.url, r.id].join("/"));
 		} else {
 			this.server.post("roster",{team_id:id,tournament_belongs_to_league_and_division_id:r.id}).subscribe(val=>{
-				console.log(val);
 				this.ngOnInit();
 			});
 		}
 	}
 
 	ngOnInit(): void {
+		this.divisions = [];
 		this.route.params.forEach((params: Params) => {
 			let tournament = +params['tournament'];
 			this.server.get("list/tournament", { 'filter': { 'id': tournament }, 'extend': true }).subscribe(data => {
@@ -64,6 +64,7 @@ export class TournamentComponent {
 
 				this.rights = this.server.getTeam2Edit();
 				this.divisions.forEach(record => {
+					record.rosters = [];
 					record['userRosters'] = [];
 					this.server.get("list/roster", { 'filter': { 'tournament_belongs_to_league_and_division_id': record.id } }).subscribe(data => {
 						record.rosters = data;

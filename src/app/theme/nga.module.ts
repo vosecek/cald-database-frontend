@@ -4,6 +4,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { NgUploaderModule } from 'ngx-uploader';
 
+
 import {
   BaThemeConfig
 } from './theme.config';
@@ -43,7 +44,7 @@ import {
   BaProfilePicturePipe
 } from './pipes';
 
-import { OrderBy, DivisionPipe, PlayerPipe, TeamPipe, TeamMarkPipe, SexPipe, IntersectPipe,FilterPlayersPipe } from '../pipes';
+import { OrderBy, DivisionPipe, PlayerPipe, TeamPipe, TeamMarkPipe, SexPipe, IntersectPipe, FilterPlayersPipe, SeasonPipe } from '../pipes';
 
 import {
   BaImageLoaderService,
@@ -92,7 +93,8 @@ const NGA_PIPES = [
   TeamMarkPipe,
   SexPipe,
   IntersectPipe,
-  FilterPlayersPipe
+  FilterPlayersPipe,
+  SeasonPipe
 ];
 
 const NGA_SERVICES = [
@@ -121,7 +123,7 @@ const NGA_VALIDATORS = [
     RouterModule,
     FormsModule,
     ReactiveFormsModule,
-    NgUploaderModule,
+    NgUploaderModule
   ],
   exports: [
     ...NGA_PIPES,

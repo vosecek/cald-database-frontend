@@ -25,6 +25,7 @@ export class Dashboard {
 	}
 
 	private init():void {
+		this.tournaments = [];
 		this.server.get('list/tournament').subscribe(data => {
 			let date = new Date();
 			data.forEach(tournament => {
@@ -63,7 +64,6 @@ export class Dashboard {
 			this.router.navigateByUrl(['app','seasons',season.name,tournament.id,r.id].join("/"));
 		} else {
 			this.server.post("roster",{team_id:id,tournament_belongs_to_league_and_division_id:r.id}).subscribe(val=>{
-				console.log(val);
 				this.init();
 			});
 		}
