@@ -199,7 +199,7 @@ export class Admin {
 				delete: false
 			},
 			pager: {
-				// display: false
+				perPage:20
 			},
 			add: {
 				addButtonContent: '<i class="ion-ios-plus-outline"></i>',
@@ -236,7 +236,7 @@ export class Admin {
 				delete: true
 			},
 			pager: {
-				// display: false
+				perPage:20
 			},
 			add: {
 				addButtonContent: '<i class="ion-ios-plus-outline"></i>',
@@ -289,7 +289,7 @@ export class Admin {
 				delete: false
 			},
 			pager: {
-				// display: false
+				perPage:20
 			},
 			add: {
 				addButtonContent: '<i class="ion-ios-plus-outline"></i>',
@@ -417,6 +417,7 @@ export class Admin {
 	ngOnInit(): void {
 		this.seasons = this.server.getType("season");
 		this.initSettings();
+		this.tournament();
 	}
 
 }
