@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <div *ngFor="let tournament of tournaments|order:['-name']">
-            <ba-card title="{{tournament.name}}" baCardClass="with-scroll">
+            <ba-card title="{{tournament.name}}" link='#/app/seasons/{{tournament.season_id|season}}/{{tournament.id}}' baCardClass="with-scroll">
                 <p>{{tournament.location}}, {{tournament.date|date}}</p>
                 <div *ngFor='let division of tournament.divisions' style='margin-bottom: 1em;'>
                     <h3>{{division.division_id|division}}</h3>

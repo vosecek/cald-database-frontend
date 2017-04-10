@@ -6,6 +6,7 @@ import {Component, Input} from '@angular/core';
 })
 export class BaCard {
   @Input() title:String;
+  @Input() link:String;
   @Input() baCardClass:String;
   @Input() cardType:String;
 }
