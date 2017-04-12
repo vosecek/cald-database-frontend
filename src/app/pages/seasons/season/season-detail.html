@@ -5,7 +5,7 @@
                 <li *ngFor="let tournament of tournaments">
                     <a [routerLink]="['/app/seasons',season.name, tournament.id]">{{tournament.name}}</a>
                     <br />
-                    <small>{{tournament.date|date}}, {{tournament.league_name}}, {{tournament.division_name}}</small>
+                    <small>{{tournament.date|date}}<span *ngFor='let extended of tournament.extended'>, {{extended.division_id|division}}</span></small>
                 </li>
             </ul>
         </ba-card>

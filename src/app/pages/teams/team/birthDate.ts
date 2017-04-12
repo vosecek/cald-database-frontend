@@ -18,7 +18,6 @@ export class BirthDate implements ViewCell, OnInit {
 	}
 
 	ngOnInit() {
-		console.log(this.value);
 		if (this.value) {
 			this.renderValue = this.value.toString().toUpperCase();
 		}

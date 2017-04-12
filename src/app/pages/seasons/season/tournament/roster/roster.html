@@ -1,7 +1,8 @@
 <div class="row">
     <div class='col-xl-6'>
-        <ba-card title="{{teamMark}} - soupiska" baCardClass="with-scroll">
-            <div class='col-xl-6'>
+        <ba-card title="{{teamMark}} - soupiska {{tournament.division_id|division}}" baCardClass="with-scroll">
+            <alert type="success" dismissOnTimeout="5000" *ngIf='updated'>Soupiska aktualizována</alert>
+            <div class='col-xl-6' [hidden]='!allowOpen'>
                 <h4>Muži</h4>
                 <div *ngFor='let player of players2roster|order:["last_name"]|sex:"male"' class='roster'>
                     <button (click)='remove(player)' class='btn btn-default btn-with-icon btn-xs'><i class='ion-trash-a'></i> {{player.id|player}} </button>
@@ -16,8 +17,8 @@
             <div class='col-xl-12'>
                 <div *ngIf='players2roster.length == 0'>Klik na jméno hráče v pravém sloupci přidá hráče do soupisky</div>
                 <hr />
-                <button class='btn btn-danger btn-raised fl' (click)='delete()'>Smazat tým z turnaje</button>
-                <button class='btn btn-success btn-raised fr' (click)='save()'>Uložit soupisku</button>
+                <button [disabled]='sending' class='btn btn-danger btn-raised fl' (click)='delete()'>Smazat tým z turnaje <i [hidden]='!sending' class='fa fa-spin fa-circle-o-notch'></i></button>
+                <button [disabled]='sending || players2roster.length == 0' class='btn btn-success btn-raised fr' (click)='save()'>Uložit soupisku <i [hidden]='!sending' class='fa fa-spin fa-circle-o-notch'></i></button>
             </div>
         </ba-card>
     </div>
@@ -39,19 +40,33 @@
                     </div>
                 </div>
             </div>
+            <div class='row'>
+                <div class='col-xl-12'>
+                    <div class="form-group">
+                        <label for="queryPlayer">Hledat ve všech týmech dle jména/příjmení </label>
+                        <input (keyup)="searchPlayer()" id='queryPlayer' class='form-control' [(ngModel)]='queryPlayer' placeholder="jméno (alespoň 3 znaky)" />
+                    </div>
+                    <div *ngIf='queryPlayer.length>2'>
+                        <h4>Vyhledaní hráči</h4>
+                        <div *ngFor='let player of foundPlayers|order:["last_name"]' class='roster'>
+                            <button (click)='add(player)' [disabled]='inRoster(player)' class='btn btn-default btn-with-icon btn-xs'><i class='ion-plus-circled'></i> {{player.id|player}} ({{player.team_id|team}}) </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <hr />
-            <div class='col-xl-6'>
+            <div class='col-xl-6' [hidden]='!allowOpen'>
                 <h4>Muži</h4>
-                <div *ngIf='(availablePlayers|filterPlayers:queryTeam|order:["last_name"]|sex:"male"|intersect:players2roster).length == 0'>žádní hráči</div>
-                <div *ngFor='let player of availablePlayers|filterPlayers:queryTeam|order:["last_name"]|sex:"male"|intersect:players2roster' class='roster'>
-                    <button (click)='add(player)' class='btn btn-default btn-with-icon btn-xs'><i class='ion-plus-circled'></i> {{player.id|player}} </button>
+                <div *ngIf='(availablePlayers|filterPlayers:queryTeam|order:["last_name"]|sex:"male").length == 0'>žádní hráči</div>
+                <div *ngFor='let player of availablePlayers|filterPlayers:queryTeam|order:["last_name"]|sex:"male"' class='roster'>
+                    <button (click)='add(player)' [disabled]='inRoster(player)' class='btn btn-default btn-with-icon btn-xs'><i class='ion-plus-circled'></i> {{player.id|player}} </button>
                 </div>
             </div>
             <div class='col-xl-6'>
                 <h4>Ženy</h4>
-                <div *ngIf='(availablePlayers|filterPlayers:queryTeam|order:["last_name"]|sex:"female"|intersect:players2roster).length == 0'>žádní hráči</div>
-                <div *ngFor='let player of availablePlayers|filterPlayers:queryTeam|order:["last_name"]|sex:"female"|intersect:players2roster' class='roster'>
-                    <button (click)='add(player)' class='btn btn-default btn-with-icon btn-xs'><i class='ion-plus-circled'></i> {{player.id|player}} </button>
+                <div *ngIf='(availablePlayers|filterPlayers:queryTeam|order:["last_name"]|sex:"female").length == 0'>žádní hráči</div>
+                <div *ngFor='let player of availablePlayers|filterPlayers:queryTeam|order:["last_name"]|sex:"female"' class='roster'>
+                    <button (click)='add(player)' [disabled]='inRoster(player)' class='btn btn-default btn-with-icon btn-xs'><i class='ion-plus-circled'></i> {{player.id|player}} </button>
                 </div>
             </div>
         </ba-card>

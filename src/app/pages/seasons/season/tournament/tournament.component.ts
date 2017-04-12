@@ -23,31 +23,46 @@ export class TournamentComponent {
 	divisions: TournamentExtended[];
 	rosters: any[];
 	colClass: string;
-	rights:any[];
+	rights: any[];
+	teams: any[];
+	addTeam: any;
 
 	constructor(
 		private route: ActivatedRoute,
 		private router: Router,
 		private formBuilder: FormBuilder,
-		private server: ServerService,
+		public server: ServerService,
 		private playerPipe: PlayerPipe
 	) {
 		this.season = new Season;
 		this.tournament = new Tournament;
 	}
 
-	public roster(r: any,id?:number): void {
+	public roster(r: any, id?: number): void {
+		console.log(r);
 		if (!id) {
-			this.router.navigateByUrl([this.router.url, r.id].join("/"));
+			this.router.navigateByUrl([this.router.url, r.tournament_belongs_to_league_and_division_id, r.id].join("/"));
 		} else {
-			this.server.post("roster",{team_id:id,tournament_belongs_to_league_and_division_id:r.id}).subscribe(val=>{
+			this.server.post("roster", { team_id: id, tournament_belongs_to_league_and_division_id: r.id }).subscribe(val => {
 				this.ngOnInit();
 			});
 		}
 	}
 
+	private detectMark(roster: any): void {
+		var teams = {};
+		roster.forEach(el => {
+			if (!teams[el.team_id]) {
+				teams[el.team_id] = 0;
+			}
+			el.mark = teams[el.team_id];
+			teams[el.team_id]++;
+		});
+	}
+
 	ngOnInit(): void {
 		this.divisions = [];
+		this.teams = this.server.getType("team");
 		this.route.params.forEach((params: Params) => {
 			let tournament = +params['tournament'];
 			this.server.get("list/tournament", { 'filter': { 'id': tournament }, 'extend': true }).subscribe(data => {
@@ -68,6 +83,7 @@ export class TournamentComponent {
 					record['userRosters'] = [];
 					this.server.get("list/roster", { 'filter': { 'tournament_belongs_to_league_and_division_id': record.id } }).subscribe(data => {
 						record.rosters = data;
+						this.detectMark(record.rosters);
 						record.rosters.forEach((roster) => {
 							if (this.rights.indexOf(roster.team_id) > -1) {
 								if (!record['userRosters'][roster.team_id]) record['userRosters'][roster.team_id] = [];

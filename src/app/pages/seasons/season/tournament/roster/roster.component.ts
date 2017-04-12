@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Season } from '../../../../../types/season';
 import { Player } from '../../../../../types/player';
 import { Team } from '../../../../../types/team';
@@ -12,12 +12,13 @@ import { ServerService } from '../../../../../services/server.service';
 import { PlayerPipe } from '../../../../../pipes/player.pipe';
 import { TeamMarkPipe } from '../../../../../pipes/team-mark.pipe';
 
+import { AlertComponent } from 'ng2-bootstrap';
+
 @Component({
 	selector: 'roster',
 	styleUrls: ['./roster.scss'],
 	providers: [PlayerPipe],
-	templateUrl: 'roster.html',
-	// changeDetection: ChangeDetectionStrategy.OnPush
+	templateUrl: 'roster.html'
 })
 
 export class RosterComponent {
@@ -26,7 +27,14 @@ export class RosterComponent {
 	roster: any[];
 	teams: Team[];
 
+	tournament: {};
+	tournament_id: string;
+
 	selectedTeam: number;
+	updated: boolean = false;
+
+	sending: boolean = false;
+	alerts: any[] = [];
 
 	public players2roster: Player[] = [];
 	public availablePlayers: Player[] = [];
@@ -35,6 +43,10 @@ export class RosterComponent {
 	public teamMark: string = "";
 
 	queryTeam: string = "";
+	queryPlayer: string = "";
+	foundPlayers: Player[] = [];
+
+	public allowOpen:boolean = true;
 
 	private originPlayers2roster: Player[] = [];
 
@@ -45,6 +57,18 @@ export class RosterComponent {
 		private teamMarkPipe: TeamMarkPipe,
 		private router: Router
 	) {
+	}
+
+	public searchPlayer(): void {
+		if (this.queryPlayer.length > 2) {
+			let players = this.server.getType("player");
+			this.queryPlayer = this.queryPlayer.toLowerCase();
+			this.foundPlayers = players.filter(item => {
+				if ((item.first_name && item.first_name.toLowerCase().search(this.queryPlayer) > -1) || (item.last_name && item.last_name.toLowerCase().search(this.queryPlayer) > -1)) {
+					return true;
+				}
+			});
+		}
 	}
 
 	loadTeam(): void {
@@ -68,29 +92,74 @@ export class RosterComponent {
 		this.players2roster.splice(i, 1);
 	}
 
+	private updateFinished(): void {
+		this.sending = false;
+		this.updated = true;
+		this.originPlayers2roster = this.players2roster.slice();
+	}
+
 	save(): void {
+		this.sending = true;
+		this.updated = false;
 		let toAdd = this.players2roster.filter(item => this.originPlayers2roster.indexOf(item) < 0);
 		let toDelete = this.originPlayers2roster.filter(item => this.players2roster.indexOf(item) < 0);
 
-		toAdd.forEach(item => { 
-			this.server.post(["roster",this.id,"player",item.id].join("/")).subscribe(el=>{
+		let finished = 0;
+		if (toAdd.length + toDelete.length === 0) {
+			this.updateFinished();
+		}
+
+		toAdd.forEach(item => {
+			this.server.post(["roster", this.id, "player", item.id].join("/")).subscribe(el => {
 				console.log(el);
+			}, err => {
+				finished++;
+				if (finished == (toAdd.length + toDelete.length)) {
+					this.updateFinished();
+				}
+			}, () => {
+				finished++;
+				if (finished == (toAdd.length + toDelete.length)) {
+					this.updateFinished();
+				}
 			});
 		});
 
 		toDelete.forEach(item => {
 			this.server.delete(["roster", this.id, "player", item.id].join("/")).subscribe(el => {
 				console.log(el);
+			}, err => {
+				finished++;
+				if (finished == (toAdd.length + toDelete.length)) {
+					this.updateFinished();
+				}
+			}, () => {
+				finished++;
+				if (finished == (toAdd.length + toDelete.length)) {
+					this.updateFinished();
+				}
 			});
 		});
 	}
 
 	delete(): void {
+		this.sending = true;
 		let ok = confirm("Opravdu smazat soupisku týmu " + this.teamMark + "?");
 		if (ok) {
 			this.server.delete('roster/' + this.id).subscribe(val => {
 				this.router.navigateByUrl(this.tournamentUrl());
+				this.sending = false;
+			}, err => {
+				this.sending = false;
 			});
+		}
+	}
+
+	inRoster(p: Player): boolean {
+		if (this.players2roster.find(item => p.id == item.id)) {
+			return true;
+		} else {
+			return false;
 		}
 	}
 
@@ -104,15 +173,27 @@ export class RosterComponent {
 		this.teams = this.server.getType("team");
 		this.route.params.forEach((params: Params) => {
 			this.id = params['roster'];
+			this.tournament_id = params['division'];
 		});
 
 		let rights = this.server.getTeam2Edit();
 		this.selectedTeam = rights[0];
 		this.loadTeam();
 
+		this.tournament = this.server.getType("tournamentExtended", this.tournament_id);
+		this.tournament['division'] = this.server.getType('division', this.tournament['division_id']);
+
+		if(this.tournament['division'].cond){
+			let condition = JSON.parse(this.tournament['division'].cond);
+			if(condition.player && condition.player.fields && condition.player.fields.sex){
+				if(condition.player.fields.sex == "female"){
+					this.allowOpen = false;
+				}
+			}
+		}
+
 		if (this.id) {
 			this.server.get("list/roster", { 'extend': true, 'filter': { 'id': this.id } }).subscribe(val => {
-				console.log(val);
 				if (val.length == 0) {
 					this.router.navigateByUrl(this.tournamentUrl());
 				}

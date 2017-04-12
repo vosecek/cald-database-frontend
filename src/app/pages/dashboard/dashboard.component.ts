@@ -24,13 +24,12 @@ export class Dashboard {
 		this.init();
 	}
 
-	private init():void {
+	private init(): void {
 		this.tournaments = [];
 		this.server.get('list/tournament').subscribe(data => {
 			let date = new Date();
 			data.forEach(tournament => {
 				if (new Date(tournament.date.split(" ")[0]) > date) {
-					// console.log(tournament.date);
 					tournament.date = new Date(tournament.date.split(" ")[0]);
 
 					tournament.divisions = this.server.getTournaments2league(tournament.id);
@@ -56,14 +55,14 @@ export class Dashboard {
 		});
 	}
 
-	public roster(r: any,id?:number): void {
+	public roster(r: any, id?: number): void {
 		if (!id) {
 			let division = this.server.getType("tournamentExtended", r.tournament_belongs_to_league_and_division_id);
-			let tournament = this.server.getType("tournament",division.tournament_id);
-			let season =this.server.getType("season", tournament.season_id);
-			this.router.navigateByUrl(['app','seasons',season.name,tournament.id,r.id].join("/"));
+			let tournament = this.server.getType("tournament", division.tournament_id);
+			let season = this.server.getType("season", tournament.season_id);
+			this.router.navigateByUrl(['app', 'seasons', season.name, tournament.id, r.tournament_belongs_to_league_and_division_id, r.id].join("/"));
 		} else {
-			this.server.post("roster",{team_id:id,tournament_belongs_to_league_and_division_id:r.id}).subscribe(val=>{
+			this.server.post("roster", { team_id: id, tournament_belongs_to_league_and_division_id: r.id }).subscribe(val => {
 				this.init();
 			});
 		}

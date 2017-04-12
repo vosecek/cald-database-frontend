@@ -8,15 +8,18 @@ import { SeasonDetail } from './season/season-detail.component';
 import { TournamentComponent } from './season/tournament/tournament.component';
 import { RosterComponent } from './season/tournament/roster/roster.component';
 import { routing } from './seasons.routing';
+import { AlertModule } from 'ng2-bootstrap/alert';
 
 @NgModule({
 	imports: [
 		CommonModule,
 		FormsModule,
 		NgaModule,
-		routing
+		routing,
+		AlertModule.forRoot()
 	],
 	declarations: [
+
 		SeasonDetail,
 		Seasons,
 		TournamentComponent,

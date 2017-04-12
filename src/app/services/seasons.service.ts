@@ -13,7 +13,7 @@ export class SeasonsService {
 	}
 
 	public getTournaments(id: any): Observable<any> {
-		return this.server.get('list/tournament', { 'filter': { 'season_id': id }, 'extend': true }).map(tournaments => tournaments);
+		return this.server.get('list/tournament', { 'filter': { 'season_id': id } }).map(tournaments => tournaments);
 	}
 
 	public getSeason(year: any): Season {

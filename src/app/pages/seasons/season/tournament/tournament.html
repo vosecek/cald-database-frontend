@@ -10,29 +10,41 @@
     <div [ngClass]='colClass' *ngFor='let division of divisions'>
         <div *ngIf='division.rosters'>
             <ba-card title="{{division.division_id|division}} ({{division.rosters.length}})" baCardClass="with-scroll">
-                <div *ngIf='division.userRosters.length>0'>
-                    <h4>Moje týmy</h4>
-                    <div *ngFor='let team of division.userRosters' style='display: inline;'>
-                        <div *ngFor='let r of team;let i = index;' style='display: inline;'>
-                            <button (click)="roster(r)" class="btn btn-info btn-with-icon"><i class="ion-edit"></i>{{r.team_id|team}} {{i|teammark}}</button>
+                <div *ngIf='!server.isAdminMenu()'>
+                    <div *ngIf='division.userRosters.length>0'>
+                        <h4>Moje týmy</h4>
+                        <div *ngFor='let team of division.userRosters' style='display: inline;'>
+                            <div *ngFor='let r of team;let i = index;' style='display: inline;'>
+                                <button (click)="roster(r)" class="btn btn-info btn-with-icon"><i class="ion-edit"></i>{{r.team_id|team}} {{i|teammark}}</button>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div style='margin-top: .5em;'>
-                    <div *ngFor='let team of rights' style='display: inline;'>
-                        <button (click)="roster(division,team)" class="btn btn-success btn-with-icon"><i class="ion-plus"></i>Přidat tým {{team|team}}</button>
+                    <div style='margin-top: .5em;'>
+                        <div *ngFor='let team of rights' style='display: inline;'>
+                            <button (click)="roster(division,team)" class="btn btn-success btn-with-icon"><i class="ion-plus"></i>Přidat tým {{team|team}}</button>
+                        </div>
                     </div>
                 </div>
                 <br />
                 <h4>Přihlášené týmy</h4>
                 <ul>
-                    <li *ngFor="let roster of division.rosters|order:['name']">
-                        <a style="cursor:pointer;" (click)="roster.hide = !roster.hide">{{roster.name}}</a> <span *ngIf='roster.players'>({{roster.players.length}})</span>
-                        <ul [hidden]='roster.hide' *ngIf='roster.players'>
-                            <li *ngFor="let player of roster.players|order:['name']">{{player.name}}</li>
+                    <li *ngFor="let r of division.rosters|order:['name']">
+                        <a style="cursor:pointer;" (click)="r.hide = !r.hide">{{r.name}} {{r.mark|teammark}}</a> <span *ngIf='r.players'>({{r.players.length}})</span>
+                        <span *ngIf='server.isAdminMenu()'><button (click)="roster(r)" class="btn btn-info btn-xs btn-tiny">upravit</button></span>
+                        <ul [hidden]='r.hide' *ngIf='r.players'>
+                            <li *ngFor="let player of r.players|order:['name']">{{player.name}}</li>
                         </ul>
                     </li>
                 </ul>
+                <div *ngIf='server.isAdminMenu()' class='col-xl-6'>
+                    <div class="form-group">
+                        <label for="addTeam">Přidat tým ručně jako správce</label>
+                        <select id='addTeam' class='form-control' [(ngModel)]='addTeam'>
+                            <option *ngFor='let team of teams|order:["name"]' value='{{team.id}}'>{{team.name}}</option>
+                        </select>
+                    </div>
+                    <button (click)="roster(division,addTeam)" class="btn btn-success btn-with-icon"><i class="ion-plus"></i>Přidat tým</button>
+                </div>
             </ba-card>
         </div>
     </div>

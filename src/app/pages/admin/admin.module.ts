@@ -13,6 +13,8 @@ import { Privileges } from './privileges';
 
 import { ModalModule } from 'ng2-bootstrap';
 
+import {DateCell } from "./dateCell";
+
 
 
 @NgModule({
@@ -26,11 +28,13 @@ import { ModalModule } from 'ng2-bootstrap';
     ModalModule.forRoot()
   ],
   entryComponents: [
-    Privileges
+    Privileges,
+    DateCell
   ],
   declarations: [
     Admin,
-    Privileges
+    Privileges,
+    DateCell
   ]
 })
 export class AdminModule { }

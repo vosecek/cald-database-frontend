@@ -130,7 +130,21 @@ export class BaContentTop {
       if (this.path.length == 5) {
         switch (this.path[1]) {
           case "seasons":
-            this.breadcrumbs[4]['title'] = "Soupiska týmu";
+            let tournament = this.server.getType("tournamentExtended", this.path[4]);
+            let division = this.server.getType("division",tournament.division_id);
+            this.breadcrumbs[4]['title'] = ["Soupiska týmu",division.name.toUpperCase()].join(" ");
+            break;
+
+          default:
+            // code...
+            break;
+        }
+      }
+
+      if (this.path.length == 6) {
+        switch (this.path[1]) {
+          case "seasons":
+            this.breadcrumbs.splice(5, 1);
             break;
 
           default:

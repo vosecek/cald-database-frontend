@@ -29,13 +29,12 @@ export class SeasonDetail {
 
 			this.season = this.seasonsService.getSeason(year);
 			this.seasonsService.getTournaments(this.season.id).subscribe(tournaments => {
-				console.log(tournaments);
 				this.tournaments = [];
 				tournaments.forEach((data: Tournament) => {
-					var extended = this.server.getType("tournamentExtended", data.id);
-					data['league_name'] = this.server.getType("league", extended['league_id'],"name");
-					data['division_name'] = this.server.getType("division", extended['division_id'], "name");
+					data['extended'] = [];
+					var extended = this.server.getType("tournamentExtended", data.id, '', 'tournament_id', true);
 					data['date'] = new Date(data['date'].split(" ")[0]);
+					data['extended'] = extended;
 					this.tournaments.push(data);
 				});
 			});

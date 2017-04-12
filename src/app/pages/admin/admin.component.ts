@@ -14,6 +14,7 @@ import { LocalDataSource } from 'ng2-smart-table';
 
 import { Privileges } from './privileges';
 import { ModalDirective } from 'ng2-bootstrap';
+import { DateCell } from './dateCell';
 
 
 @Component({
@@ -199,7 +200,7 @@ export class Admin {
 				delete: false
 			},
 			pager: {
-				perPage:20
+				perPage: 20
 			},
 			add: {
 				addButtonContent: '<i class="ion-ios-plus-outline"></i>',
@@ -236,7 +237,7 @@ export class Admin {
 				delete: true
 			},
 			pager: {
-				perPage:20
+				perPage: 20
 			},
 			add: {
 				addButtonContent: '<i class="ion-ios-plus-outline"></i>',
@@ -289,7 +290,7 @@ export class Admin {
 				delete: false
 			},
 			pager: {
-				perPage:20
+				perPage: 20
 			},
 			add: {
 				addButtonContent: '<i class="ion-ios-plus-outline"></i>',
@@ -320,7 +321,8 @@ export class Admin {
 				},
 				founded_at: {
 					title: 'Založeno',
-					type: 'string'
+					type: 'custom',
+					renderComponent: DateCell
 				}
 			}
 		};

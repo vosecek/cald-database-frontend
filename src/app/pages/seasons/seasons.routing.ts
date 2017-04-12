@@ -19,7 +19,7 @@ export const routes: Routes = [
 		component: TournamentComponent
 	},
 	{
-		path: ':year/:tournament/:roster',
+		path: ':year/:tournament/:division/:roster',
 		component: RosterComponent
 	}
 

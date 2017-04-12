@@ -103,24 +103,36 @@ export class ServerService {
             new Promise((resolve, reject) => {
                 this.get("list/tournament").subscribe(data => {
                     this.tournaments = data;
+                }, err => {
+                    resolve();
+                }, () => {
                     resolve();
                 })
             }),
             new Promise((resolve, reject) => {
                 this.get("list/division").subscribe(data => {
                     this.divisions = data;
+                }, err => {
+                    resolve();
+                }, () => {
                     resolve();
                 })
             }),
             new Promise((resolve, reject) => {
                 this.get("list/league").subscribe(data => {
                     this.leagues = data;
+                }, err => {
+                    resolve();
+                }, () => {
                     resolve();
                 })
             }),
             new Promise((resolve, reject) => {
                 this.get("list/tournament_belongs_to_league_and_division").subscribe(data => {
                     this.tournamentExtended = data;
+                }, err => {
+                    resolve();
+                }, () => {
                     resolve();
                 })
             }),
@@ -132,24 +144,36 @@ export class ServerService {
                     val['rights'].forEach(el => {
                         this.rights.push(el.split(":"));
                     });
+                }, err => {
+                    resolve();
+                }, () => {
                     resolve();
                 })
             }),
             new Promise((resolve, reject) => {
                 this.get("list/player").subscribe(data => {
                     this.players = data;
+                }, err => {
+                    resolve();
+                }, () => {
                     resolve();
                 })
             }),
             new Promise((resolve, reject) => {
                 this.get("list/season").subscribe(data => {
                     this.seasons = data;
+                }, err => {
+                    resolve();
+                }, () => {
                     resolve();
                 })
             }),
             new Promise((resolve, reject) => {
                 this.get("list/team").subscribe(data => {
                     this.teams = data;
+                }, err => {
+                    resolve();
+                }, () => {
                     resolve();
                 })
             })]).then(val => {
@@ -224,6 +248,7 @@ export class ServerService {
         }
 
         if (filter) {
+
             return data.filter((record: any) => record[key] == val.toString());
         } else {
             var record = data.find((record: any) => record[key] == val.toString());
