@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Team } from '../../../types/team';
 import { Player } from '../../../types/player';
 import { ActivatedRoute, Params } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 
 import { TeamsService } from '../../../services/teams.service';
 import { PlayerService } from '../../../services/player.service';
@@ -10,7 +10,8 @@ import { ServerService } from '../../../services/server.service';
 
 import { LocalDataSource } from 'ng2-smart-table';
 import { BirthDate } from './birthDate';
-
+import { ModalDirective } from 'ng2-bootstrap';
+import { EmailValidator } from '../../../validators/validator';
 
 @Component({
 	selector: 'team-detail',
@@ -19,10 +20,13 @@ import { BirthDate } from './birthDate';
 })
 
 export class TeamDetailComponent implements OnInit {
+	@ViewChild('modal') modal: ModalDirective;
+
 	public team: Team;
 	public players: Array<Player>;
-	public form: Array<Player>;
+	public userForm: FormGroup;
 	public loaded: boolean;
+	public user: Player;
 
 	public editable: boolean = false;
 	public viewable: boolean = false;
@@ -39,8 +43,11 @@ export class TeamDetailComponent implements OnInit {
 		private playerService: PlayerService,
 		private server: ServerService
 	) {
-		this.form = [];
 		this.loaded = false;
+	}
+
+	hideModal(): void {
+		this.modal.hide();
 	}
 
 	public permission(): void {
@@ -62,8 +69,55 @@ export class TeamDetailComponent implements OnInit {
 		}
 	}
 
+	public openUserForm(event, create?: boolean) {
+		this.userForm.reset();
+
+		delete this.user;
+
+		if (!create) {
+			this.user = event.data;
+			this.userForm.get("id").setValue(event.data.id);
+			this.userForm.get("first_name").setValue(event.data.first_name);
+			this.userForm.get("last_name").setValue(event.data.last_name);
+			this.userForm.get("email").setValue(event.data.email);
+			this.userForm.get("birth_date").setValue(event.data.birth_date);
+			this.userForm.get("sex").setValue(event.data.sex);
+		}
+
+		this.modal.show();
+	}
+
+	public saveUser(): void {
+		if (!this.userForm.value.id) {
+			this.playerService.createPlayer(this.userForm.value).subscribe(val => {
+				this.userForm.value.id = val.id;
+				this.playerService.assignPlayer2Team(this.userForm.value, this.team).subscribe(val => {
+					this.source.prepend(this.userForm.value);
+				});
+			}, err => {
+				alert(err);
+			});
+			this.hideModal();
+		} else {
+			this.source.update(this.user, this.userForm.value);
+			this.playerService.updatePlayer(this.userForm.value);
+			this.hideModal();
+		}
+	}
+
 	initForm(): void {
+		this.userForm = this.formBuilder.group({
+			'id': [''],
+			'first_name': ['', Validators.required],
+			'last_name': ['', Validators.required],
+			'email': ['', [EmailValidator]],
+			'birth_date': [''],
+			'sex': ['', Validators.required],
+			// 'teams': [''] 
+		});
+
 		this.settings = {
+			mode: "external",
 			actions: {
 				columnTitle: "Úprava",
 				add: this.editable,
@@ -71,7 +125,7 @@ export class TeamDetailComponent implements OnInit {
 				delete: false
 			},
 			pager: {
-				// perPage: 20
+				perPage: 30
 			},
 			add: {
 				confirmCreate: true,
@@ -90,40 +144,28 @@ export class TeamDetailComponent implements OnInit {
 				id: {
 					title: '#',
 					type: 'number',
-					editable: false,
 					sort: false
 				},
 				first_name: {
 					title: 'Jméno',
-					type: 'string',
-					editable: true
+					type: 'string'
 				},
 				last_name: {
 					title: 'Příjmení',
-					type: 'string',
-					editable: true
+					type: 'string'
 				},
 				sex: {
 					title: 'Pohlaví',
-					type: 'html',
-					editable: true,
-					editor: {
-						type: 'list',
-						config: {
-							list: [{ value: 'male', title: 'muž' }, { value: 'female', title: 'žena' }],
-						},
-					},
+					type: 'string'
 				},
 				birth_date: {
 					title: 'Datum narození',
 					type: 'string',
-					html5: 'date',
-					editable: true
+					html5: 'date'
 				},
 				email: {
 					title: 'E-mail',
-					type: 'string',
-					editable: true
+					type: 'string'
 				}
 			}
 		}
@@ -159,24 +201,4 @@ export class TeamDetailComponent implements OnInit {
 		this.source.setSort([{ field: 'last_name', direction: 'asc' }]);
 		this.source.load(data);
 	}
-
-	public editPlayer(data: any): void {
-		data.confirm.resolve(data.newData);
-		this.playerService.updatePlayer(data.newData);
-	}
-
-	public createPlayer(data: any): void {
-		let player = data.newData;
-		this.playerService.createPlayer(player).subscribe(val => {
-			data.confirm.resolve(data.newData);
-			player.id = val.id;
-			this.playerService.assignPlayer2Team(player, this.team).subscribe(val => {
-				// alert("Hráč vytvořen");
-			});
-		}, err => {
-			console.log(err);
-			alert(err);
-		});
-	}
-
 }

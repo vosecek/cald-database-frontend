@@ -1,9 +1,85 @@
-<div>
+<div class='row'>
     <div *ngIf="team">
         <h2>{{team.name}}</h2>
         <p>Celkový počet členů oddílu: {{players?.length}}</p>
     </div>
+    <div bsModal #modal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button class="close" (click)="modal.hide()" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 *ngIf='user' class="modal-title">{{user.first_name}} {{user.last_name}}</h4>
+                    <h4 *ngIf='!user' class="modal-title">Nový hráč</h4>
+                </div>
+                <div class="modal-body">
+                    <form [formGroup]="userForm" novalidate (submit)="saveUser()" autocomplete="off" *ngIf='userForm'>
+                        <input type='hidden' formControlName='id' />
+                        <div class='row'>
+                            <div class='col-xl-6'>
+                                <div class="form-group" [ngClass]='{"has-error":!userForm.get("first_name").valid && userForm.get("first_name").touched}' autocomplete="off">
+                                    <label for="first_name">Jméno</label>
+                                    <input type="text" class="form-control" formControlName='first_name' id="first_name">
+                                </div>
+                            </div>
+                            <div class='col-xl-6'>
+                                <div class="form-group" [ngClass]='{"has-error":!userForm.get("last_name").valid && userForm.get("last_name").touched}'>
+                                    <label for="last_name">Příjmení</label>
+                                    <input type="text" class="form-control" formControlName='last_name' id="last_name">
+                                </div>
+                            </div>
+                        </div>
+                        <div class='row'>
+                            <div class='col-xl-6'>
+                                <div class="form-group" [ngClass]='{"has-error":!userForm.get("email").valid && userForm.get("email").touched}' autocomplete="off">
+                                    <label for="email">E-mail</label>
+                                    <input type="email" class="form-control" formControlName='email' id="email">
+                                </div>
+                            </div>
+                            <div class='col-xl-6'>
+                                <div class="form-group" [ngClass]='{"has-error":!userForm.get("birth_date").valid && userForm.get("birth_date").touched}'>
+                                    <label for="birth_date">Datum narození</label>
+                                    <input type="date" class="form-control" formControlName='birth_date' id="birth_date">
+                                </div>
+                            </div>
+                        </div>
+                        <div class='row'>
+                            <div class='col-xl-6'>
+                                <div class="form-group">
+                                    <label>Pohlaví</label>
+                                    <div class="input-demo radio-demo row">
+                                        <div class="col-md-4">
+                                            <label class="radio-inline custom-radio nowrap">
+                                                <input type="radio" formControlName="sex" value="male" />
+                                                <span>muž</span>
+                                            </label>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="radio-inline custom-radio nowrap">
+                                                <input type="radio" formControlName="sex" value="female" />
+                                                <span>žena</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- <div class="form-group" [ngClass]='{"has-error":!userForm.get("teams").valid && userForm.get("teams").touched}'>
+                            <label for="division_ids">Oddíly (ctrl+click pro více oddílů)</label>
+                            <select multiple class="form-control" formControlName='teams' id="teams">
+                                <option *ngFor='let team of teamsOptions|order:["title"]' value='{{team.value}}'>{{team.title}}</option>
+                            </select>
+                        </div> -->
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button [disabled]='userForm.invalid' class="btn btn-primary confirm-btn" (click)="saveUser()">Uložit</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <ba-card title="Hráči týmu" baCardClass="with-scroll">
-        <ng2-smart-table [settings]="settings" [source]="source" (onSave)="createPlayer($event)" (createConfirm)="createPlayer($event)" (editConfirm)="editPlayer($event)"></ng2-smart-table>
+        <ng2-smart-table [settings]="settings" [source]="source" (create)="openUserForm($event,true)" (edit)="openUserForm($event)"></ng2-smart-table>
     </ba-card>
 </div>

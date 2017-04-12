@@ -19,7 +19,7 @@ export class DateCell implements ViewCell, OnInit {
 			if (isNaN(date.getTime())) {
 				this.renderValue = "?";
 			} else {
-				this.renderValue = date.toLocaleString();
+				this.renderValue = date.toLocaleDateString();
 			}
 
 		}

@@ -15,7 +15,7 @@ export class TeamsComponent {
 
   constructor(
     private teamsService: TeamsService,
-    private server: ServerService
+    public server: ServerService
   ) {
   }
 

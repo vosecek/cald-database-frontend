@@ -17,8 +17,13 @@
             <div class='col-xl-12'>
                 <div *ngIf='players2roster.length == 0'>Klik na jméno hráče v pravém sloupci přidá hráče do soupisky</div>
                 <hr />
-                <button [disabled]='sending' class='btn btn-danger btn-raised fl' (click)='delete()'>Smazat tým z turnaje <i [hidden]='!sending' class='fa fa-spin fa-circle-o-notch'></i></button>
-                <button [disabled]='sending || players2roster.length == 0' class='btn btn-success btn-raised fr' (click)='save()'>Uložit soupisku <i [hidden]='!sending' class='fa fa-spin fa-circle-o-notch'></i></button>
+                <div class='text-left fl'>
+                    <button title='Smazat tým z turnaje' [disabled]='sending' class='btn btn-danger btn-raised' (click)='delete()'>Smazat tým z turnaje <i [hidden]='!sending' class='fa fa-spin fa-circle-o-notch'></i></button>
+                </div>
+                <div class='text-right fr'>
+                    <button [disabled]='sending || players2roster.length == 0' class='btn btn-success btn-raised' (click)='save()'>Uložit soupisku <i [hidden]='!sending' class='fa fa-spin fa-circle-o-notch'></i></button>
+                    <button title='Exportovat do PDF' [disabled]='sending || players2roster.length == 0' class='btn btn-info btn-raised btn-with-icon' (click)='pdf()'><i class='ion-ios-download'></i>PDF</button>
+                </div>
             </div>
         </ba-card>
     </div>

@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-xl-12">
-        <ba-card title="Moje oddíly" baCardClass="with-scroll" *ngIf='myTeams'>
+        <ba-card title="Moje oddíly" baCardClass="with-scroll" *ngIf='myTeams && !server.isAdminMenu()'>
             <ul>
                 <li *ngFor="let team of myTeams|order:['name']">
                     <a [routerLink]="['/app/teams',team.id]">{{team.name}}</a>

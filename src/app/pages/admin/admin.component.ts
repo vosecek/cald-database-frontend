@@ -15,6 +15,7 @@ import { LocalDataSource } from 'ng2-smart-table';
 import { Privileges } from './privileges';
 import { ModalDirective } from 'ng2-bootstrap';
 import { DateCell } from './dateCell';
+import { TeamCell } from './teamCell';
 
 
 @Component({
@@ -30,6 +31,8 @@ export class Admin {
 	public userForm: FormGroup;
 	public users: Array<User>;
 
+	public inEdit: any;
+
 	private seasons: Array<Season>;
 	public type: string = "";
 
@@ -44,7 +47,6 @@ export class Admin {
 	constructor(
 		private server: ServerService,
 		private teams: TeamsService,
-		private formBuilder: FormBuilder,
 		private fb: FormBuilder
 	) {
 	}
@@ -54,12 +56,10 @@ export class Admin {
 	}
 
 	public deleteTournament($data, $source): void {
-		console.log($data.data);
 		let ok = confirm("Opravdu smazat turnaj " + $data.data.name + "?");
 		if (ok) {
 			this.server.delete("admin/tournament/" + $data.data.id).subscribe(val => {
 				this.source.tournament.remove($data.data).then(val => {
-					console.log(val);
 				});
 			});
 		}
@@ -70,7 +70,7 @@ export class Admin {
 		if (this.tournamentForm.value.id) {
 			path.push(this.tournamentForm.value.id);
 			this.server.put(path.join("/"), this.tournamentForm.value).subscribe(val => {
-				console.log(val);
+				this.source.tournament.update(this.inEdit, this.tournamentForm.value);
 				this.server.reload("tournamentExtendedFull").then(data => {
 					this.tournament();
 				});
@@ -78,41 +78,42 @@ export class Admin {
 			});
 		} else {
 			this.server.post(path.join("/"), this.tournamentForm.value).subscribe(val => {
-				console.log(val);
+				this.source.tournament.prepend(this.tournamentForm.value);
 				this.server.reload("tournamentExtendedFull").then(data => {
 					this.tournament();
 				});
 				this.hideModal();
 			});
 		}
-
-
-
 	}
 
 	public saveTeam(): void {
 		let path = ["team"];
-		if (this.teamForm.value.id) path.push(this.teamForm.value.id);
+
+		if (this.teamForm.value.id) {
+			path.push(this.teamForm.value.id);
+			this.source.team.update(this.inEdit, this.teamForm.value);
+		}else{
+			this.source.team.prepend(this.teamForm.value);
+		}
 		this.server.post(path.join("/"), this.teamForm.value).subscribe(val => {
 			this.hideModal();
-			this.server.reload("team").then(val => {
-				this.source.team.load(val);
-			});
 		});
 	}
 
 	public saveUser(): void {
 		if (!this.userForm.value.id) {
 			this.server.post('user', this.userForm.value).subscribe(val => {
-				this.userForm.value.teams.forEach(el => {
+				this.userForm.value.privileges.forEach(el => {
 					this.server.post("team/" + el + "/user/" + this.userForm.value.id).subscribe(el => {
 					});
 				});
+				this.source.user.prepend(this.userForm.value);
 				this.hideModal();
 			});
 		} else {
-			let toDelete = this.originalPrivileges.filter(item => this.userForm.value.teams.indexOf(item) < 0);
-			let toAdd = this.userForm.value.teams.filter(item => this.originalPrivileges.indexOf(item) < 0);
+			let toDelete = this.originalPrivileges.filter(item => this.userForm.value.privileges.indexOf(item) < 0);
+			let toAdd = this.userForm.value.privileges.filter(item => this.originalPrivileges.indexOf(item) < 0);
 
 			this.server.put('admin/user/' + this.userForm.value.id, this.userForm.value).subscribe(val => {
 				toDelete.forEach(el => {
@@ -124,6 +125,7 @@ export class Admin {
 					this.server.post("team/" + el + "/user/" + this.userForm.value.id, { "privilege": "edit" }).subscribe(el => {
 					});
 				});
+				this.source.user.update(this.inEdit, this.userForm.value);
 				this.hideModal();
 			});
 		}
@@ -131,22 +133,30 @@ export class Admin {
 
 	public openTournamentForm(event, create?: boolean): void {
 		this.tournamentForm.reset();
+		delete this.inEdit;
 
 		if (event.data) {
-			this.server.reload('tournamentExtendedFull').then(data => {
-				let record = data.filter(item => item.tournament.id == event.data.id);
-				if (!create && record[0]) {
-					let season = this.seasons.filter(item => item.name == record[0].tournament.season);
-					this.tournamentForm.get("id").setValue(record[0].tournament.id);
-					this.tournamentForm.get("name").setValue(record[0].tournament.name);
-					this.tournamentForm.get("date").setValue(record[0].tournament.date);
-					this.tournamentForm.get("location").setValue(record[0].tournament.location);
-					this.tournamentForm.get("season_id").setValue(season[0].id);
-					this.tournamentForm.get("league_ids").setValue([record[0].league.id]);
-					this.tournamentForm.get("division_ids").setValue([record[0].division.id]);
-				}
-				this.modal.show();
-			});
+			this.inEdit = event.data;
+
+			let record = this.server.getType("tournament", event.data.id)
+			if (!create && record) {
+				var extended = this.server.getType("tournamentExtended", record.id, null, 'tournament_id', true);
+				let leagues = [];
+				let divisions = [];
+				extended.forEach(el => {
+					divisions.push(el.division_id);
+					leagues.push(el.league_id);
+				});
+
+				this.tournamentForm.get("id").setValue(record.id);
+				this.tournamentForm.get("name").setValue(record.name);
+				this.tournamentForm.get("date").setValue(record.date);
+				this.tournamentForm.get("location").setValue(record.location);
+				this.tournamentForm.get("season_id").setValue(record.season_id);
+				this.tournamentForm.get("league_ids").setValue(leagues);
+				this.tournamentForm.get("division_ids").setValue(divisions);
+			}
+			this.modal.show();
 		} else {
 			this.modal.show();
 		}
@@ -156,6 +166,7 @@ export class Admin {
 		this.teamForm.reset();
 
 		if (!create) {
+			this.inEdit = event.data;
 			this.teamForm.get("id").setValue(event.data.id);
 			this.teamForm.get("name").setValue(event.data.name);
 			this.teamForm.get("founded_at").setValue(event.data.founded_at);
@@ -171,11 +182,12 @@ export class Admin {
 		this.originalPrivileges = [];
 
 		if (!create) {
+			this.inEdit = event.data;
 			event.data.privileges.forEach(el => {
 				this.originalPrivileges.push(el['entity_id']);
 			});
 
-			this.userForm.get("teams").setValue(this.originalPrivileges);
+			this.userForm.get("privileges").setValue(this.originalPrivileges);
 
 			this.userForm.get("id").setValue(event.data.id);
 			this.userForm.get("login").setValue(event.data.login);
@@ -200,7 +212,7 @@ export class Admin {
 				delete: false
 			},
 			pager: {
-				perPage: 20
+				perPage: 10
 			},
 			add: {
 				addButtonContent: '<i class="ion-ios-plus-outline"></i>',
@@ -221,9 +233,10 @@ export class Admin {
 					title: 'e-mail',
 					type: 'string'
 				},
-				teams: {
+				privileges: {
 					title: 'oddíly',
-					type: 'string'
+					type: 'custom',
+					renderComponent: TeamCell
 				}
 			}
 		};
@@ -336,18 +349,6 @@ export class Admin {
 		this.source.user = new LocalDataSource();
 		this.source.user.setSort([{ field: 'teams', direction: 'asc' }]);
 		this.server.get("list/user", { 'extend': true }).subscribe(val => {
-			val.forEach(el => {
-				if (!el.teams) el.teams = '';
-				var teams = [];
-				el['privileges'].forEach(el2 => {
-					if (!el2['entity_id']) return;
-					let team = this.teams.getTeam(el2['entity_id']);
-					if (team) {
-						teams.push(team['name']);
-					}
-				});
-				el.teams = teams.join(', ');
-			});
 			this.source.user.load(val);
 		});
 
@@ -356,7 +357,7 @@ export class Admin {
 			'password': [''],
 			'email': ['', [EmailValidator, Validators.required]],
 			'login': ['', Validators.required],
-			'teams': ['']
+			'privileges': ['']
 		});
 		this.type = "user";
 	}
@@ -381,7 +382,7 @@ export class Admin {
 		this.source.tournament.setSort([{ field: 'date', direction: 'desc' }]);
 
 		let data = [];
-		console.log(this.server.get("list/tournament"));
+
 		this.server.get("list/tournament").subscribe(val => {
 			val.forEach((el: Tournament) => {
 				var extended = this.server.getType("tournamentExtended", el.id, null, 'tournament_id', true);
@@ -395,7 +396,6 @@ export class Admin {
 
 				el['division'] = el['division'].join(", ");
 				el['season'] = this.server.getType("season", el['season_id'], "name");
-				// el['date'] = new Date(el['date'].split(" ")[0]);
 				el['date'] = el['date'].split(" ")[0];
 				data.push(el);
 			});
