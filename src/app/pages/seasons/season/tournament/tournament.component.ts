@@ -60,6 +60,10 @@ export class TournamentComponent {
 		});
 	}
 
+	public futureTournament(): boolean {
+		return (this.tournament['date'] > new Date());
+	}
+
 	ngOnInit(): void {
 		this.divisions = [];
 		this.teams = this.server.getType("team");

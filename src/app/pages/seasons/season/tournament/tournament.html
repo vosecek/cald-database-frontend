@@ -10,7 +10,7 @@
     <div [ngClass]='colClass' *ngFor='let division of divisions'>
         <div *ngIf='division.rosters'>
             <ba-card title="{{division.division_id|division}} ({{division.rosters.length}})" baCardClass="with-scroll">
-                <div *ngIf='!server.isAdminMenu()'>
+                <div *ngIf='!server.isAdminMenu() && futureTournament()'>
                     <div *ngIf='division.userRosters.length>0'>
                         <h4>Moje týmy</h4>
                         <div *ngFor='let team of division.userRosters' style='display: inline;'>
