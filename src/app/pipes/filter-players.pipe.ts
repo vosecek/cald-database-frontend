@@ -19,7 +19,7 @@ export class FilterPlayersPipe implements PipeTransform {
 		}
 		query = query.toLowerCase();
 		return data.filter(item => {
-			if (item.first_name.toLowerCase().search(query) > -1 || item.last_name.toLowerCase().search(query) > -1) {
+			if ((item.first_name && item.first_name.toLowerCase().search(query) > -1) || (item.last_name && item.last_name.toLowerCase().search(query) > -1)) {
 				return true;
 			}
 		});
