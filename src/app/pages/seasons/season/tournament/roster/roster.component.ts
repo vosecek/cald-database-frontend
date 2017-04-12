@@ -18,7 +18,7 @@ import { AlertComponent } from 'ng2-bootstrap';
 	selector: 'roster',
 	styleUrls: ['./roster.scss'],
 	providers: [PlayerPipe],
-	templateUrl: 'roster.html'
+	templateUrl: 'roster.html',
 })
 
 export class RosterComponent {
@@ -46,7 +46,7 @@ export class RosterComponent {
 	queryPlayer: string = "";
 	foundPlayers: Player[] = [];
 
-	public allowOpen:boolean = true;
+	public allowOpen: boolean = true;
 
 	private originPlayers2roster: Player[] = [];
 
@@ -176,17 +176,13 @@ export class RosterComponent {
 			this.tournament_id = params['division'];
 		});
 
-		let rights = this.server.getTeam2Edit();
-		this.selectedTeam = rights[0];
-		this.loadTeam();
-
 		this.tournament = this.server.getType("tournamentExtended", this.tournament_id);
 		this.tournament['division'] = this.server.getType('division', this.tournament['division_id']);
 
-		if(this.tournament['division'].cond){
+		if (this.tournament['division'].cond) {
 			let condition = JSON.parse(this.tournament['division'].cond);
-			if(condition.player && condition.player.fields && condition.player.fields.sex){
-				if(condition.player.fields.sex == "female"){
+			if (condition.player && condition.player.fields && condition.player.fields.sex) {
+				if (condition.player.fields.sex == "female") {
 					this.allowOpen = false;
 				}
 			}
@@ -198,6 +194,8 @@ export class RosterComponent {
 					this.router.navigateByUrl(this.tournamentUrl());
 				}
 				this.roster = val[0];
+				this.selectedTeam = this.roster['team'].id;
+				this.loadTeam();
 				this.server.get("list/roster", { filter: { 'tournament_belongs_to_league_and_division_id': this.roster['tournament_belongs_to_league_and_division']['id'] } }).subscribe(val => {
 					let teams = val.filter(item => item.team_id == this.roster['team']['id']);
 					var i = 0;
