@@ -4,6 +4,10 @@
 		"selected_items":
 		[
 			[
+				"Date",
+				"DateCell\talias"
+			],
+			[
 				"Alert",
 				"AlertComponent\talias"
 			],
@@ -510,10 +514,6 @@
 			[
 				"STEP",
 				"STEP_MODULE"
-			],
-			[
-				"vlau",
-				"value2"
 			]
 		]
 	},
@@ -655,32 +655,53 @@
 	},
 	"file_history":
 	[
+		"/Users/jirik/angular2/evidence/admin/.gitignore",
+		"/Users/jirik/angular2/evidence/admin/package.json",
+		"/Users/jirik/.bash_sessions/5C11D769-2284-45E5-A5D3-78DBF1B7E603.historynew",
+		"/Users/jirik/angular2/evidence/admin/src/app/pages/teams/team/team-detail.component.ts",
+		"/Users/jirik/angular2/npm/ng2-smart-table/package.json",
+		"/Users/jirik/angular2/npm/ng2-smart-table/src/ng2-smart-table/package.json",
+		"/Users/jirik/.bash_history",
+		"/Users/jirik/angular2/npm/ng2-smart-table/src/ng2-smart-table/ng2-smart-table.component.ts",
+		"/Users/jirik/angular2/npm/ng2-smart-table/ng2-smart-table.ts",
+		"/Users/jirik/angular2/evidence/admin/src/app/pages/admin/admin.component.ts",
+		"/Users/jirik/angular2/evidence/admin/src/app/pages/seasons/season/tournament/roster/roster.html",
+		"/Users/jirik/angular2/evidence/admin/src/app/services/server.service.ts",
+		"/Users/jirik/angular2/evidence/admin/src/app/pages/admin/dateCell.ts",
+		"/Users/jirik/angular2/evidence/admin/src/app/pages/admin/admin.module.ts",
+		"/Users/jirik/angular2/evidence/admin/src/app/pages/admin/admin.html",
+		"/Users/jirik/angular2/evidence/admin/src/app/pages/seasons/season/tournament/tournament.html",
+		"/Users/jirik/angular2/evidence/admin/src/app/pages/dashboard/dashboard.html",
+		"/Users/jirik/angular2/evidence/admin/src/app/pages/seasons/season/tournament/roster/roster.component.ts",
+		"/Users/jirik/angular2/evidence/admin/src/app/pipes/order.pipe.ts",
+		"/Users/jirik/angular2/evidence/admin/src/app/pages/teams/team/team-detail.component.html",
+		"/Users/jirik/angular2/evidence/admin/src/app/pages/pages.component.ts",
+		"/Users/jirik/angular2/evidence/admin/src/app/pages/dashboard/dashboard.component.ts",
+		"/Users/jirik/Library/Caches/com.binarynights.ForkLift-3/8AF266C3-E3D1-4699-8EEA-35EC6434FEB2/priprav_menu1.php",
+		"/Users/jirik/Library/Caches/com.binarynights.ForkLift-3/B1A92819-D80E-4EB9-B2F1-4139153EDD4E/stranka1.html",
+		"/Users/jirik/Library/Caches/com.binarynights.ForkLift-3/D8880136-0355-4986-B5D3-7E4238967EEB/stranka1.html",
+		"/Users/jirik/angular2/evidence/admin/src/app/pages/seasons/season/tournament/tournament.component.ts",
+		"/Users/jirik/angular2/evidence/admin/src/app/pages/teams/team/birthDate.ts",
+		"/Users/jirik/angular2/evidence/admin/src/app/pipes/intersect.pipe.ts",
+		"/Users/jirik/angular2/evidence/admin/src/app/theme/components/baContentTop/baContentTop.component.ts",
+		"/Users/jirik/angular2/evidence/admin/src/app/pipes/filter-players.pipe.ts",
+		"/Users/jirik/angular2/evidence/admin/src/app/pages/seasons/season/season-detail.component.ts",
+		"/Users/jirik/angular2/evidence/admin/src/app/pages/seasons/season/tournament/roster/roster.scss",
 		"/Users/jirik/angular2/evidence/admin/src/app/pages/seasons/seasons.module.ts",
 		"/Users/jirik/Library/Application Support/Sublime Text 3/Packages/User/SublimeLinter.sublime-settings",
 		"/Users/jirik/Library/Caches/com.binarynights.ForkLift-3/B7CF6586-C194-4FB6-B73C-17039E3C0198/stranka1.html",
 		"/Users/jirik/Library/Caches/com.binarynights.ForkLift-3/8763074D-DBD3-4E19-8E2B-868C9E190092/stranka1.html",
 		"/Users/jirik/angular2/evidence/admin/src/app/pages/guards/loaded.guard.ts",
 		"/Users/jirik/angular2/evidence/admin/src/app/pages/pages.routing.ts",
-		"/Users/jirik/angular2/evidence/admin/src/app/services/server.service.ts",
 		"/Users/jirik/angular2/evidence/admin/src/app/pages/seasons/seasons.routing.ts",
-		"/Users/jirik/angular2/evidence/admin/src/app/pages/seasons/season/tournament/roster/roster.component.ts",
-		"/Users/jirik/angular2/evidence/admin/src/app/pages/seasons/season/tournament/tournament.html",
-		"/Users/jirik/angular2/evidence/admin/src/app/pages/seasons/season/tournament/roster/roster.html",
 		"/Users/jirik/angular2/evidence/admin/src/app/pages/seasons/seasons.component.ts",
-		"/Users/jirik/angular2/evidence/admin/src/app/pipes/intersect.pipe.ts",
 		"/Users/jirik/angular2/evidence/admin/src/app/services/login.service.ts",
 		"/Users/jirik/angular2/evidence/admin/src/app/pages/login/login.component.ts",
-		"/Users/jirik/angular2/evidence/admin/src/app/pages/admin/admin.component.ts",
-		"/Users/jirik/angular2/evidence/admin/src/app/pages/seasons/season/tournament/tournament.component.ts",
-		"/Users/jirik/angular2/evidence/admin/src/app/pipes/order.pipe.ts",
 		"/Users/jirik/angular2/evidence/admin/src/app/theme/nga.module.ts",
 		"/Users/jirik/angular2/evidence/admin/src/app/pages/guards/admin.guard.ts",
-		"/Users/jirik/angular2/evidence/admin/src/app/pages/admin/admin.html",
 		"/Users/jirik/angular2/evidence/admin/src/app/theme/components/baMenu/baMenu.html",
 		"/Users/jirik/angular2/evidence/admin/src/app/theme/components/baPageTop/baPageTop.component.ts",
 		"/Users/jirik/angular2/evidence/admin/src/app/pages/seasons/seasons.html",
-		"/Users/jirik/angular2/evidence/admin/src/app/pages/dashboard/dashboard.component.ts",
-		"/Users/jirik/angular2/evidence/admin/src/app/pages/dashboard/dashboard.html",
 		"/Users/jirik/angular2/evidence/admin/src/app/theme/components/baCard/baCard.component.ts",
 		"/Users/jirik/angular2/evidence/admin/src/app/theme/components/baCard/baCard.html",
 		"/Users/jirik/angular2/evidence/admin/src/app/pipes/season.pipe.ts",
@@ -695,26 +716,20 @@
 		"/Users/jirik/angular2/evidence/ng2-admin/package.json",
 		"/Users/jirik/angular2/evidence/ng2-admin/.gitignore",
 		"/Users/jirik/angular2/evidence/admin/README.md",
-		"/Users/jirik/angular2/evidence/admin/.gitignore",
 		"/Users/jirik/angular2/evidence/admin/Dockerfile",
-		"/Users/jirik/angular2/evidence/admin/package.json",
 		"/Users/jirik/angular2/evidence/admin/dist/index.html",
 		"/Users/jirik/angular2/evidence/admin/config/webpack.common.js",
 		"/Users/jirik/angular2/evidence/ng2-admin/config/webpack.common.js",
-		"/Users/jirik/angular2/evidence/admin/src/app/theme/components/baContentTop/baContentTop.component.ts",
 		"/Users/jirik/angular2/evidence/admin/src/app/pages/dashboard/dashboard.routing.ts",
 		"/Users/jirik/angular2/evidence/admin/src/app/theme/components/baContentTop/baContentTop.html",
-		"/Users/jirik/angular2/evidence/admin/src/app/pipes/filter-players.pipe.ts",
 		"/Users/jirik/angular2/evidence/admin/src/app/pipes/sex.pipe.ts",
 		"/Users/jirik/angular2/evidence/admin/src/app/pipes/player.pipe.ts",
-		"/Users/jirik/angular2/evidence/admin/src/app/pages/seasons/season/tournament/roster/roster.scss",
 		"/Users/jirik/angular2/evidence/admin/src/app/app.scss",
 		"/Users/jirik/angular2/evidence/admin/src/app/pages/user/user.html",
 		"/Users/jirik/angular2/evidence/admin/src/app/pages/user/user.component.ts",
 		"/Users/jirik/angular2/evidence/admin/src/app/types/tournamentextended.ts",
 		"/Users/jirik/angular2/evidence/admin/src/app/pipes/team-mark.pipe.ts",
 		"/Users/jirik/angular2/evidence/admin/src/app/pages/pages.menu.ts",
-		"/Users/jirik/angular2/evidence/admin/src/app/pages/seasons/season/season-detail.component.ts",
 		"/Users/jirik/angular2/ng2-admin/src/app/pages/tables/components/smartTables/smartTables.html",
 		"/Users/jirik/angular2/ng2-admin/src/app/pages/tables/components/smartTables/smartTables.component.ts",
 		"/Users/jirik/angular2/evidence/admin/src/app/services/seasons.service.ts",
@@ -722,10 +737,8 @@
 		"/Users/jirik/ionic/homeport-app/enviroments/saudi/kfu/config.xml",
 		"/Users/jirik/angular2/evidence/admin/src/app/types/tournament.ts",
 		"/Users/jirik/angular2/evidence/admin/src/app/theme/components/baPageTop/baPageTop.html",
-		"/Users/jirik/angular2/evidence/admin/src/app/pages/pages.component.ts",
 		"/Users/jirik/angular2/evidence/ng2-admin/config/webpack.prod.js",
 		"/Users/jirik/angular2/evidence/admin/src/app/theme/components/baMenu/components/baMenuItem/baMenuItem.html",
-		"/Users/jirik/angular2/evidence/admin/src/app/pages/teams/team/team-detail.component.ts",
 		"/Users/jirik/angular2/evidence/admin/postcss.config.js",
 		"/Users/jirik/angular2/evidence/ng2-admin/dist/index.html",
 		"/Users/jirik/Library/Caches/com.binarynights.ForkLift-3/8B8BDF43-1114-4914-86A9-3BE3F630245A/tkhs.php",
@@ -746,19 +759,15 @@
 		"/Users/jirik/angular2/evidence/admin/src/app/pages/teams/teams.service.ts",
 		"/Users/jirik/angular2/evidence/admin/src/app/pages/admin/privileges.ts",
 		"/Users/jirik/angular2/evidence/admin/src/app/theme/services/baMenu/baMenu.service.ts",
-		"/Users/jirik/angular2/evidence/admin/src/app/pages/teams/team/team-detail.component.html",
-		"/Users/jirik/angular2/evidence/admin/src/app/pages/admin/admin.module.ts",
 		"/Users/jirik/angular2/evidence/admin/src/app/pages/admin/priviligies.ts",
 		"/Users/jirik/angular2/evidence/admin/src/app/pages/teams/teams.routing.ts",
 		"/Users/jirik/angular2/evidence/admin/src/app/services/player.service.ts",
-		"/Users/jirik/angular2/npm/ng2-smart-table/package.json",
 		"/Users/jirik/angular2/npm/ng2-smart-table/src/ng2-smart-table/lib/grid.ts",
 		"/Users/jirik/angular2/evidence/backup/package.json",
 		"/Users/jirik/angular2/evidence/backup/node_modules/ng2-smart-table/package.json",
 		"/Users/jirik/angular2/evidence/admin-old-angular2/package.json",
 		"/Users/jirik/angular2/npm/ng2-smart-table/src/polyfills.ts",
 		"/Users/jirik/angular2/npm/ng2-smart-table/src/test.ts",
-		"/Users/jirik/angular2/npm/ng2-smart-table/src/ng2-smart-table/package.json",
 		"/Users/jirik/angular2/npm/ng2-smart-table/src/ng2-smart-table/index.ts",
 		"/Users/jirik/angular2/ng2-smart-table/package.json",
 		"/Users/jirik/angular2/evidence/admin/src/app/pages/teams/teams.module.ts",
@@ -773,16 +782,7 @@
 		"/Users/jirik/angular2/evidence/admin/src/app/pages/teams/team/team-detail.module.ts",
 		"/Users/jirik/angular2/evidence/admin/node_modules/ng2-smart-table/src/ng2-smart-table/components/cell/cell-edit-mode/custom-edit.component.js",
 		"/Users/jirik/angular2/evidence/admin/node_modules/ng2-smart-table/src/ng2-smart-table/components/cell/cell-edit-mode/edit-cell.component.js",
-		"/Users/jirik/angular2/evidence/admin/src/app/pages/teams/team/birthDate.ts",
-		"/Users/jirik/angular2/evidence/admin/node_modules/ng2-smart-table/src/ng2-smart-table/components/cell/cell.component.js",
-		"/Users/jirik/angular2/evidence/admin/node_modules/ng2-smart-table/src/ng2-smart-table/components/cell/cell-view-mode/custom-view.component.js",
-		"/Users/jirik/angular2/evidence/admin/node_modules/ng2-smart-table/src/ng2-smart-table/components/tbody/tbody.component.js",
-		"/Users/jirik/angular2/evidence/admin/node_modules/ng2-smart-table/src/ng2-smart-table/components/tbody/tbody.component.html",
-		"/Users/jirik/angular2/evidence/admin/node_modules/ng2-smart-table/src/ng2-smart-table/components/tbody/tbody.directives.js",
-		"/Users/jirik/angular2/evidence/admin/src/app/theme/directives/baSlimScroll/baSlimScroll.directive.ts",
-		"/Users/jirik/angular2/evidence/admin/node_modules/ng2-smart-table/src/ng2-smart-table/components/cell/cell-view-mode/custom-view.component.ts",
-		"/Users/jirik/angular2/evidence/admin/node_modules/ng2-smart-table/src/ng2-smart-table/components/cell/cell.component.ts",
-		"/Users/jirik/angular2/evidence/admin/node_modules/ng2-smart-table/src/ng2-smart-table/components/cell/cell-view-mode/view-cell.component.js"
+		"/Users/jirik/angular2/evidence/admin/node_modules/ng2-smart-table/src/ng2-smart-table/components/cell/cell.component.js"
 	],
 	"find":
 	{
@@ -810,6 +810,34 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"angular",
+			"this.breadcrumbs",
+			"app",
+			"ng2-smart-table",
+			"created with",
+			"rights",
+			"selectedTeam =",
+			"selectedteam",
+			"mobile",
+			"birthDate",
+			"renderValue",
+			"zalo",
+			"teams",
+			"selectedTeam",
+			"roster",
+			"teams",
+			"mu",
+			"extend:",
+			"extend",
+			"condition",
+			"<button (click)='add(player)' ",
+			"|intersect:players2roster",
+			"intersect",
+			"length >",
+			"this.queryPlayer",
+			"query",
+			"searchPlayer",
+			"(change",
 			"queryTeam",
 			"selectedTeam",
 			"console.log",
@@ -909,35 +937,7 @@
 			"ng2-smart-table",
 			"originPlayers2roster",
 			"this.router.",
-			"router.",
-			"router",
-			"rights",
-			"division_id",
-			"rights",
-			"detectRoster",
-			"'team_id':",
-			"filter:{'team_id':",
-			"players",
-			"router.navigate(",
-			"season",
-			"tournamentExtendedFull",
-			"tournamentExtended",
-			"tournamentExtendedfull",
-			"season",
-			"tournamentExtended",
-			"console.log(",
-			"this.router.navigateByUrl",
-			"roster(",
-			"/roster",
-			"breadcrumb",
-			"availablePlayers|",
-			"|intersect:players2roster",
-			"query.toLowerCase()",
-			"toLoweCase",
-			"query",
-			"filterPlayer",
-			"'\n",
-			"first_name"
+			"router."
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -969,18 +969,11 @@
 				0,
 				1,
 				1
-			],
-			[
-				1,
-				0,
-				2,
-				1
 			]
 		],
 		"cols":
 		[
 			0.0,
-			0.663707225679,
 			1.0
 		],
 		"rows":
@@ -1015,16 +1008,100 @@
 		"selected_items":
 		[
 			[
+				"app.rou",
+				"app.routing.ts"
+			],
+			[
+				"bacont",
+				"theme/components/baContentTop/baContentTop.html"
+			],
+			[
+				"app.rout",
+				"app.routing.ts"
+			],
+			[
+				"page.rout",
+				"pages/pages.routing.ts"
+			],
+			[
+				"bacon",
+				"theme/components/baContentTop/baContentTop.component.ts"
+			],
+			[
+				"team-de",
+				"pages/teams/team/team-detail.component.ts"
+			],
+			[
+				"admin.compo",
+				"pages/admin/admin.component.ts"
+			],
+			[
+				"team-deta",
+				"pages/teams/team/team-detail.component.ts"
+			],
+			[
+				"roster.co",
+				"pages/seasons/season/tournament/roster/roster.component.ts"
+			],
+			[
+				"orde",
+				"pipes/order.pipe.ts"
+			],
+			[
+				"roster.com",
+				"pages/seasons/season/tournament/roster/roster.component.ts"
+			],
+			[
+				"dsh",
+				"pages/dashboard/dashboard.component.ts"
+			],
+			[
+				"dashb",
+				"pages/dashboard/dashboard.html"
+			],
+			[
+				"admin.mo",
+				"pages/admin/admin.module.ts"
+			],
+			[
+				"damin.com",
+				"pages/admin/admin.component.ts"
+			],
+			[
+				"admin.ht",
+				"pages/admin/admin.html"
+			],
+			[
 				"roster",
 				"pages/seasons/season/tournament/roster/roster.html"
 			],
 			[
-				"bacont",
-				"theme/components/baContentTop/baContentTop.component.ts"
+				"roster.h",
+				"pages/seasons/season/tournament/roster/roster.html"
 			],
 			[
-				"dashb",
+				"tourna",
+				"pages/seasons/season/tournament/tournament.component.ts"
+			],
+			[
+				"season-deta",
+				"pages/seasons/season/season-detail.component.ts"
+			],
+			[
+				"tourn",
+				"pages/seasons/season/tournament/tournament.component.ts"
+			],
+			[
+				"dash",
 				"pages/dashboard/dashboard.component.ts"
+			],
+			[
+				"inters",
+				"pipes/intersect.pipe.ts"
+			],
+			[
+				"server",
+				"services/server.service.ts"
 			],
 			[
 				"seasons.rout",
@@ -1033,10 +1110,6 @@
 			[
 				"tournament",
 				"pages/seasons/season/tournament/tournament.component.ts"
-			],
-			[
-				"server",
-				"services/server.service.ts"
 			],
 			[
 				"season",
@@ -1051,20 +1124,12 @@
 				"pages/admin/admin.component.ts"
 			],
 			[
-				"roster.com",
-				"pages/seasons/season/tournament/roster/roster.component.ts"
-			],
-			[
 				"app.mod",
 				"app.module.ts"
 			],
 			[
 				"roster.t",
 				"pages/seasons/season/tournament/roster/roster.component.ts"
-			],
-			[
-				"tourna",
-				"pages/seasons/season/tournament/tournament.html"
 			],
 			[
 				"login",
@@ -1093,10 +1158,6 @@
 			[
 				"season-de",
 				"pages/seasons/season/season-detail.component.ts"
-			],
-			[
-				"season-deta",
-				"pages/seasons/season/season-detail.html"
 			],
 			[
 				"seaso",
@@ -1129,14 +1190,6 @@
 			[
 				"pages.rou",
 				"pages/pages.routing.ts"
-			],
-			[
-				"admin.compo",
-				"pages/admin/admin.component.ts"
-			],
-			[
-				"admin.ht",
-				"pages/admin/admin.html"
 			],
 			[
 				"tournamentts",
@@ -1259,10 +1312,6 @@
 				"pipes/team-mark.pipe.ts"
 			],
 			[
-				"dash",
-				"pages/dashboard/dashboard.html"
-			],
-			[
 				"baconte",
 				"theme/components/baContentTop/baContentTop.component.ts"
 			],
@@ -1371,10 +1420,6 @@
 				"pages/pages.routing.ts"
 			],
 			[
-				"team-deta",
-				"pages/teams/team/team-detail.component.ts"
-			],
-			[
 				"baprofile",
 				"theme/pipes/baProfilePicture/baProfilePicture.pipe.ts"
 			],
@@ -1473,58 +1518,6 @@
 			[
 				"season.ser",
 				"services/seasons.service.ts"
-			],
-			[
-				"app.mo",
-				"app.module.ts"
-			],
-			[
-				"nag",
-				"theme/nga.module.ts"
-			],
-			[
-				"pgaes.com",
-				"pages/pages.component.ts"
-			],
-			[
-				"seasons.modu",
-				"pages/seasons/seasons.module.ts"
-			],
-			[
-				"seasons.htm",
-				"pages/seasons/seasons.html"
-			],
-			[
-				"ser",
-				"services/server.service.ts"
-			],
-			[
-				"pages.modu",
-				"pages/pages.module.ts"
-			],
-			[
-				"admingu",
-				"pages/guards/admin.guard.ts"
-			],
-			[
-				"server.s",
-				"services/server.service.ts"
-			],
-			[
-				"seasondeta",
-				"pages/seasons/season/season-detail.html"
-			],
-			[
-				"team.ts",
-				"types/team.ts"
-			],
-			[
-				"menu.ht",
-				"theme/components/baMenu/components/baMenuItem/baMenuItem.html"
-			],
-			[
-				"bamenu",
-				"theme/components/baMenu/baMenu.component.ts"
 			]
 		],
 		"width": 0.0

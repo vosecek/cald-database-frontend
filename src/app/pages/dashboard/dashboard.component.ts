@@ -15,7 +15,7 @@ export class Dashboard {
 	public rights: any[] = [];
 
 	constructor(
-		private server: ServerService,
+		public server: ServerService,
 		private router: Router
 	) {
 

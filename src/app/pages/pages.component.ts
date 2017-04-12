@@ -20,7 +20,6 @@ import { OrderBy } from '../pipes/order.pipe';
       </div>
     </div>
     <footer class="al-footer clearfix">
-      <div class="al-footer-right">Created with <i class="ion-heart"></i></div>
       <div class="al-footer-main clearfix">
         <div class="al-copy">&copy; <a href="http://www.cald.cz/">ČALD</a> 2017</div>
       </div>

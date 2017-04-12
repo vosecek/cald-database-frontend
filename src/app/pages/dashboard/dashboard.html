@@ -3,7 +3,7 @@
         <div *ngFor="let tournament of tournaments|order:['-name']">
             <ba-card title="{{tournament.name}}" link='#/app/seasons/{{tournament.season_id|season}}/{{tournament.id}}' baCardClass="with-scroll">
                 <p>{{tournament.location}}, {{tournament.date|date}}</p>
-                <div *ngFor='let division of tournament.divisions' style='margin-bottom: 1em;'>
+                <div *ngFor='let division of tournament.divisions' style='margin-bottom: 1em;' [hidden]='server.isAdminMenu()'>
                     <h3>{{division.division_id|division}}</h3>
                     <div *ngFor='let team of division.rosters;let team_id = index;' style='display:inline;'>
                         <div *ngFor='let r of team;let i = index;' style='display:inline;'>
