@@ -64,13 +64,15 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class='col-xl-6'>
+                                <div class="form-group">
+                                    <label for="division_ids">Změnit oddíl na</label>
+                                    <select class="form-control" formControlName='team' id="team">
+                                        <option *ngFor='let team of teams|order:["name"]' value='{{team.id}}'>{{team.name}}</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
-                        <!-- <div class="form-group" [ngClass]='{"has-error":!userForm.get("teams").valid && userForm.get("teams").touched}'>
-                            <label for="division_ids">Oddíly (ctrl+click pro více oddílů)</label>
-                            <select multiple class="form-control" formControlName='teams' id="teams">
-                                <option *ngFor='let team of teamsOptions|order:["title"]' value='{{team.value}}'>{{team.title}}</option>
-                            </select>
-                        </div> -->
                     </form>
                 </div>
                 <div class="modal-footer">

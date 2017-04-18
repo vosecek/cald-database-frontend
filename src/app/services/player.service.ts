@@ -10,7 +10,7 @@ export class PlayerService {
 
 	constructor(
 		private server: ServerService
-		) {
+	) {
 	}
 
 	private preparePlayerData(player: Player): any {
@@ -37,7 +37,11 @@ export class PlayerService {
 		});
 	}
 
-	public assignPlayer2Team(player:Player,team:Team): Observable<any> {
-		return this.server.post('/team/' + team.id + '/player/' + player.id);
+	public deletePlayer2Team(player: Player, team: string): Observable<any> {
+		return this.server.delete('/team/' + team + '/player/' + player.id);
+	}
+
+	public assignPlayer2Team(player: Player, team: number): Observable<any> {
+		return this.server.post('/team/' + team + '/player/' + player.id);
 	}
 }

@@ -23,6 +23,7 @@ export class TeamDetailComponent implements OnInit {
 	@ViewChild('modal') modal: ModalDirective;
 
 	public team: Team;
+	public teams: Team[];
 	public players: Array<Player>;
 	public userForm: FormGroup;
 	public loaded: boolean;
@@ -44,6 +45,7 @@ export class TeamDetailComponent implements OnInit {
 		private server: ServerService
 	) {
 		this.loaded = false;
+		this.teams = this.server.getType("team");
 	}
 
 	hideModal(): void {
@@ -82,6 +84,7 @@ export class TeamDetailComponent implements OnInit {
 			this.userForm.get("email").setValue(event.data.email);
 			this.userForm.get("birth_date").setValue(event.data.birth_date);
 			this.userForm.get("sex").setValue(event.data.sex);
+			this.userForm.get("team").setValue(this.team.id);
 		}
 
 		this.modal.show();
@@ -91,7 +94,7 @@ export class TeamDetailComponent implements OnInit {
 		if (!this.userForm.value.id) {
 			this.playerService.createPlayer(this.userForm.value).subscribe(val => {
 				this.userForm.value.id = val.id;
-				this.playerService.assignPlayer2Team(this.userForm.value, this.team).subscribe(val => {
+				this.playerService.assignPlayer2Team(this.userForm.value, this.userForm.value.team).subscribe(val => {
 					this.source.prepend(this.userForm.value);
 				});
 			}, err => {
@@ -99,6 +102,15 @@ export class TeamDetailComponent implements OnInit {
 			});
 			this.hideModal();
 		} else {
+			if(this.team.id != this.userForm.value) {
+				this.playerService.deletePlayer2Team(this.userForm.value, this.team.id).subscribe(val=>{
+					this.playerService.assignPlayer2Team(this.userForm.value, this.userForm.value.team).subscribe(val => {
+						let result = this.server.getType('team', this.userForm.value.team);
+						alert("Hráč přesunut do týmu " + result.name);
+						this.source.remove(this.user);
+					});
+				});
+			}
 			this.source.update(this.user, this.userForm.value);
 			this.playerService.updatePlayer(this.userForm.value);
 			this.hideModal();
@@ -113,7 +125,7 @@ export class TeamDetailComponent implements OnInit {
 			'email': ['', [EmailValidator]],
 			'birth_date': [''],
 			'sex': ['', Validators.required],
-			// 'teams': [''] 
+			'team': [{ value: this.team.id, disabled: !this.server.isAdminMenu() }]
 		});
 
 		this.settings = {
