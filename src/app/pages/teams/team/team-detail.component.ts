@@ -28,6 +28,7 @@ export class TeamDetailComponent implements OnInit {
 	public userForm: FormGroup;
 	public loaded: boolean;
 	public user: Player;
+	duplicate: any[] = [];
 
 	public editable: boolean = false;
 	public viewable: boolean = false;
@@ -72,6 +73,7 @@ export class TeamDetailComponent implements OnInit {
 	}
 
 	public openUserForm(event, create?: boolean) {
+		this.duplicate = [];
 		this.userForm.reset();
 
 		delete this.user;
@@ -90,6 +92,19 @@ export class TeamDetailComponent implements OnInit {
 		this.modal.show();
 	}
 
+	public validateDuplicate(): void {
+		this.duplicate = [];
+
+		let players = this.server.getType("player");
+		if (this.userForm.value.first_name == null || this.userForm.value.last_name == null) return;
+		players.forEach(item => {
+			if (item.id == this.userForm.value.id) return;
+			if ((item.first_name && item.first_name.toLowerCase().search(this.userForm.value.first_name.toLowerCase()) > -1) && (item.last_name && item.last_name.toLowerCase().search(this.userForm.value.last_name.toLowerCase()) > -1)) {
+				this.duplicate.push(item);
+			}
+		});
+	}
+
 	public saveUser(): void {
 		if (!this.userForm.value.id) {
 			this.playerService.createPlayer(this.userForm.value).subscribe(val => {
@@ -102,8 +117,8 @@ export class TeamDetailComponent implements OnInit {
 			});
 			this.hideModal();
 		} else {
-			if(this.team.id != this.userForm.value) {
-				this.playerService.deletePlayer2Team(this.userForm.value, this.team.id).subscribe(val=>{
+			if (this.team.id != this.userForm.value) {
+				this.playerService.deletePlayer2Team(this.userForm.value, this.team.id).subscribe(val => {
 					this.playerService.assignPlayer2Team(this.userForm.value, this.userForm.value.team).subscribe(val => {
 						let result = this.server.getType('team', this.userForm.value.team);
 						alert("Hráč přesunut do týmu " + result.name);

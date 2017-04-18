@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgaModule } from '../../../theme/nga.module';
+// import { SearchComponent } from '../../../components/search.component';
 
 @NgModule({
 	imports: [
@@ -10,6 +11,7 @@ import { NgaModule } from '../../../theme/nga.module';
 		NgaModule
 	],
 	declarations: [
+		// SearchComponent
 	],
 	providers: [
 	]

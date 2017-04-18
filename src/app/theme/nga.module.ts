@@ -58,6 +58,10 @@ import {
   EqualPasswordsValidator
 } from './validators';
 
+import { SearchComponent } from '../components/search.component';
+import { RosterComponent } from '../pages/seasons/season/tournament/roster/roster.component';
+import { AlertModule } from 'ng2-bootstrap/alert';
+
 const NGA_COMPONENTS = [
   BaAmChart,
   BaBackTop,
@@ -72,7 +76,9 @@ const NGA_COMPONENTS = [
   BaMultiCheckbox,
   BaPageTop,
   BaPictureUploader,
-  BaSidebar
+  BaSidebar,
+  RosterComponent,
+  SearchComponent
 ];
 
 const NGA_DIRECTIVES = [
@@ -123,7 +129,8 @@ const NGA_VALIDATORS = [
     RouterModule,
     FormsModule,
     ReactiveFormsModule,
-    NgUploaderModule
+    NgUploaderModule,
+    AlertModule.forRoot()
   ],
   exports: [
     ...NGA_PIPES,

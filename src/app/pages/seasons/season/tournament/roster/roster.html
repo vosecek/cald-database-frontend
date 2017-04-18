@@ -45,20 +45,7 @@
                     </div>
                 </div>
             </div>
-            <div class='row'>
-                <div class='col-xl-12'>
-                    <div class="form-group">
-                        <label for="queryPlayer">Hledat ve všech týmech dle jména/příjmení </label>
-                        <input (keyup)="searchPlayer()" id='queryPlayer' class='form-control' [(ngModel)]='queryPlayer' placeholder="jméno (alespoň 3 znaky)" />
-                    </div>
-                    <div *ngIf='queryPlayer.length>2'>
-                        <h4>Vyhledaní hráči</h4>
-                        <div *ngFor='let player of foundPlayers|order:["last_name"]' class='roster'>
-                            <button (click)='add(player)' [disabled]='inRoster(player)' class='btn btn-default btn-with-icon btn-xs'><i class='ion-plus-circled'></i> {{player.id|player}} ({{player.team_id|team}}) </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <search type='roster'></search>
             <hr />
             <div class='col-xl-6' [hidden]='!allowOpen'>
                 <h4>Muži</h4>

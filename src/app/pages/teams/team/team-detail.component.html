@@ -20,14 +20,25 @@
                             <div class='col-xl-6'>
                                 <div class="form-group" [ngClass]='{"has-error":!userForm.get("first_name").valid && userForm.get("first_name").touched}' autocomplete="off">
                                     <label for="first_name">Jméno</label>
-                                    <input type="text" class="form-control" formControlName='first_name' id="first_name">
+                                    <input (change)="validateDuplicate()" type="text" class="form-control" formControlName='first_name' id="first_name">
                                 </div>
                             </div>
                             <div class='col-xl-6'>
                                 <div class="form-group" [ngClass]='{"has-error":!userForm.get("last_name").valid && userForm.get("last_name").touched}'>
                                     <label for="last_name">Příjmení</label>
-                                    <input type="text" class="form-control" formControlName='last_name' id="last_name">
+                                    <input (change)="validateDuplicate()" type="text" class="form-control" formControlName='last_name' id="last_name">
                                 </div>
+                            </div>
+                        </div>
+                        <div class='row' *ngIf='duplicate.length>0'>
+                            <div class='col-xl-12'>
+                                <h5>Možné duplicity!</h5>
+                                <div *ngFor='let player of duplicate' class='roster'>
+                                    <button (click)='teamDetail(player)' class='btn btn-default btn-with-icon btn-xs'><i class='ion-eye'></i> {{player.id|player}} ({{player.team_id|team}}) </button>
+                                </div>
+                                <p>
+                                    Pokud se jedná o stejného hráče, kontaktuj správce evidence na evidence@cald.cz a požádej o přestup hráče.
+                                </p>
                             </div>
                         </div>
                         <div class='row'>

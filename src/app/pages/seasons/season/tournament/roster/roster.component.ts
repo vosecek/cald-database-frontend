@@ -6,10 +6,7 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ServerService } from '../../../../../services/server.service';
 
-import jsPDF from 'jspdf'
-
-// import { TournamentExtended } from '../../../../types/tournamentextended';
-// import { Tournament } from '../../../../types/tournament';
+import jsPDF from 'jspdf';
 
 import { PlayerPipe } from '../../../../../pipes/player.pipe';
 import { TeamMarkPipe } from '../../../../../pipes/team-mark.pipe';
@@ -59,6 +56,7 @@ export class RosterComponent {
 		private teamMarkPipe: TeamMarkPipe,
 		private router: Router
 	) {
+		console.log('init RosterComponent');
 	}
 
 	public pdf(): void {
@@ -70,18 +68,6 @@ export class RosterComponent {
 
 		// Save the PDF
 		doc.save('Test.pdf');
-	}
-
-	public searchPlayer(): void {
-		if (this.queryPlayer.length > 2) {
-			let players = this.server.getType("player");
-			this.queryPlayer = this.queryPlayer.toLowerCase();
-			this.foundPlayers = players.filter(item => {
-				if ((item.first_name && item.first_name.toLowerCase().search(this.queryPlayer) > -1) || (item.last_name && item.last_name.toLowerCase().search(this.queryPlayer) > -1)) {
-					return true;
-				}
-			});
-		}
 	}
 
 	loadTeam(): void {
@@ -124,7 +110,6 @@ export class RosterComponent {
 
 		toAdd.forEach(item => {
 			this.server.post(["roster", this.id, "player", item.id].join("/")).subscribe(el => {
-				console.log(el);
 			}, err => {
 				finished++;
 				if (finished == (toAdd.length + toDelete.length)) {
@@ -140,7 +125,6 @@ export class RosterComponent {
 
 		toDelete.forEach(item => {
 			this.server.delete(["roster", this.id, "player", item.id].join("/")).subscribe(el => {
-				console.log(el);
 			}, err => {
 				finished++;
 				if (finished == (toAdd.length + toDelete.length)) {

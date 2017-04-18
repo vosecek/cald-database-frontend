@@ -20,7 +20,7 @@ import { BirthDate } from './team/birthDate';
 		NgaModule,
 		routing,
 		Ng2SmartTableModule,
-		ReactiveFormsModule
+		ReactiveFormsModule,
 		ModalModule.forRoot()
 	],
 	entryComponents: [

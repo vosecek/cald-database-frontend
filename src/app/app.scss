@@ -11,3 +11,15 @@ select.form-control[multiple] {
 .fl {
     float: left;
 }
+
+.roster {
+    button {
+        min-width: 200px;
+        margin: .2em;
+        text-align: left;
+        i {
+            float: left;
+            display: inline-block;
+        }
+    }
+}

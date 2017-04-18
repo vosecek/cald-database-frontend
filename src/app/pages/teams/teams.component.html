@@ -1,5 +1,8 @@
 <div class="row">
     <div class="col-xl-12">
+        <ba-card title="Vyhledat hráče" baCardClass="with-scroll">
+            <search type="teams"></search>
+        </ba-card>
         <ba-card title="Moje oddíly" baCardClass="with-scroll" *ngIf='myTeams && !server.isAdminMenu()'>
             <ul>
                 <li *ngFor="let team of myTeams|order:['name']">
