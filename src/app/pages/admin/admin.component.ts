@@ -93,7 +93,7 @@ export class Admin {
 		if (this.teamForm.value.id) {
 			path.push(this.teamForm.value.id);
 			this.source.team.update(this.inEdit, this.teamForm.value);
-		}else{
+		} else {
 			this.source.team.prepend(this.teamForm.value);
 		}
 		this.server.post(path.join("/"), this.teamForm.value).subscribe(val => {
@@ -108,6 +108,7 @@ export class Admin {
 					this.server.post("team/" + el + "/user/" + this.userForm.value.id).subscribe(el => {
 					});
 				});
+				this.convertPrivileges(this.userForm.value);
 				this.source.user.prepend(this.userForm.value);
 				this.hideModal();
 			});
@@ -125,6 +126,8 @@ export class Admin {
 					this.server.post("team/" + el + "/user/" + this.userForm.value.id, { "privilege": "edit" }).subscribe(el => {
 					});
 				});
+
+				this.convertPrivileges(this.userForm.value);
 				this.source.user.update(this.inEdit, this.userForm.value);
 				this.hideModal();
 			});
@@ -184,9 +187,12 @@ export class Admin {
 		if (!create) {
 			this.inEdit = event.data;
 			event.data.privileges.forEach(el => {
-				this.originalPrivileges.push(el['entity_id']);
+				if (typeof el == "object") {
+					this.originalPrivileges.push(el['entity_id']);
+				}else{
+					this.originalPrivileges.push(el);
+				}
 			});
-
 			this.userForm.get("privileges").setValue(this.originalPrivileges);
 
 			this.userForm.get("id").setValue(event.data.id);
@@ -233,7 +239,7 @@ export class Admin {
 					title: 'e-mail',
 					type: 'string'
 				},
-				privileges: {
+				privileges_string: {
 					title: 'oddíly',
 					type: 'custom',
 					renderComponent: TeamCell
@@ -341,6 +347,20 @@ export class Admin {
 		};
 	}
 
+	private convertPrivileges(val: any): any[] {
+		var data = [];
+		val.privileges_string = "";
+		val.privileges.forEach(x => {
+			if (typeof x == "object" && x.entity_id) {
+				data.push(x.entity_id);
+			} else {
+				data.push(x);
+			}
+		});
+		val.privileges_string = data.join(",");
+		return val;
+	}
+
 	public user(): void {
 		this.teamsOptions = [];
 		this.server.getType("team").forEach(el => {
@@ -349,6 +369,9 @@ export class Admin {
 		this.source.user = new LocalDataSource();
 		this.source.user.setSort([{ field: 'teams', direction: 'asc' }]);
 		this.server.get("list/user", { 'extend': true }).subscribe(val => {
+			val.forEach(el => {
+				el = this.convertPrivileges(el);
+			});
 			this.source.user.load(val);
 		});
 

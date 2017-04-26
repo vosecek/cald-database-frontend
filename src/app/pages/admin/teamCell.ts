@@ -19,17 +19,13 @@ export class TeamCell implements ViewCell, OnInit {
 
 	renderValue: string;
 
-	@Input() value: any[];
+	@Input() value: string;
 
 	ngOnInit() {
 		if (this.value) {
 			var data = [];
-			this.value.forEach(el => {
-				if (el.entity_id) {
-					data.push(this.teamPipe.transform(el.entity_id));
-				} else {
-					data.push(this.teamPipe.transform(el));
-				}
+			this.value.split(",").forEach(el => {
+				data.push(this.teamPipe.transform(el));
 			});
 			this.renderValue = data.join(", ");
 		}
