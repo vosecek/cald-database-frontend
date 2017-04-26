@@ -26,7 +26,8 @@ import 'rxjs/add/operator/switchMap';
 
 @Injectable()
 export class ServerService {
-    public api = 'http://cald.yosarin.net/';
+    public api = 'http://api.evidence.cald.cz/';
+    // http://cald.yosarin.net/
 
     public divisions: Division[];
     public leagues: League[];
@@ -47,6 +48,7 @@ export class ServerService {
         private http: Http,
         private router: Router
     ) {
+        
     }
 
     public permission(id: string): any {
