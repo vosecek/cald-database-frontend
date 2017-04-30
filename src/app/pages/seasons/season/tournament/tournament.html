@@ -3,6 +3,10 @@
         <ba-card title="{{tournament.name}}" baCardClass="with-scroll">
             <p>Místo konání: {{tournament.location}}</p>
             <p>Datum: {{tournament.date|date}}</p>
+            <div *ngFor='let team of rights' style='display: inline;' [hidden]='server.isAdminMenu()'>
+                <button title='Exportovat do PDF' class='btn btn-warning btn-raised btn-with-icon' (click)='pdf(team)'><i class='ion-ios-download'></i>PDF Soupiska {{team|team}}</button>
+            </div>
+            <button [disabled]='pdfInProcess' *ngIf='server.isAdminMenu()' title='Exportovat do PDF' class='btn btn-warning btn-raised btn-with-icon' (click)='pdf()'><span [hidden]='pdfInProcess'><i [hidden]='!pdfInProcess' class='fa fa-spin fa-circle-o-notch'></i><i class='ion-ios-download'></i>Generuj všechny soupisky</span></button>
         </ba-card>
     </div>
 </div>
@@ -13,7 +17,7 @@
                 <div *ngIf='!server.isAdminMenu() && futureTournament()'>
                     <div *ngIf='division.userRosters.length>0'>
                         <h4>Moje týmy</h4>
-                        <div *ngFor='let team of division.userRosters' style='display: inline;'>
+                        <div *ngFor='let team of division.userRosters;let team_id = index;' style='display: inline;'>
                             <div *ngFor='let r of team;let i = index;' style='display: inline;'>
                                 <button (click)="roster(r)" class="btn btn-info btn-with-icon"><i class="ion-edit"></i>{{r.team_id|team}} {{i|teammark}}</button>
                             </div>
@@ -22,6 +26,7 @@
                     <div style='margin-top: .5em;'>
                         <div *ngFor='let team of rights' style='display: inline;'>
                             <button (click)="roster(division,team)" class="btn btn-success btn-with-icon"><i class="ion-plus"></i>Přidat tým {{team|team}}</button>
+                            <hr />
                         </div>
                     </div>
                 </div>

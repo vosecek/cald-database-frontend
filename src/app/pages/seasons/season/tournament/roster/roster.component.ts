@@ -6,8 +6,6 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ServerService } from '../../../../../services/server.service';
 
-import jsPDF from 'jspdf';
-
 import { PlayerPipe } from '../../../../../pipes/player.pipe';
 import { TeamMarkPipe } from '../../../../../pipes/team-mark.pipe';
 
@@ -56,18 +54,6 @@ export class RosterComponent {
 		private teamMarkPipe: TeamMarkPipe,
 		private router: Router
 	) {
-		console.log('init RosterComponent');
-	}
-
-	public pdf(): void {
-		var doc = new jsPDF();
-		doc.text(20, 20, 'Hello world!');
-		doc.text(20, 30, 'This is client-side Javascript, pumping out a PDF.');
-		doc.addPage();
-		doc.text(20, 20, 'Do you like that?');
-
-		// Save the PDF
-		doc.save('Test.pdf');
 	}
 
 	loadTeam(): void {
@@ -149,6 +135,8 @@ export class RosterComponent {
 			}, err => {
 				this.sending = false;
 			});
+		} else {
+			this.sending = false;
 		}
 	}
 

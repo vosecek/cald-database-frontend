@@ -22,7 +22,6 @@
                 </div>
                 <div class='text-right fr'>
                     <button [disabled]='sending || players2roster.length == 0' class='btn btn-success btn-raised' (click)='save()'>Uložit soupisku <i [hidden]='!sending' class='fa fa-spin fa-circle-o-notch'></i></button>
-                    <button title='Exportovat do PDF' [disabled]='sending || players2roster.length == 0' class='btn btn-info btn-raised btn-with-icon' (click)='pdf()'><i class='ion-ios-download'></i>PDF</button>
                 </div>
             </div>
         </ba-card>
