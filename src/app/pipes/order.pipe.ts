@@ -4,7 +4,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class OrderBy implements PipeTransform {
 
 	static _orderByComparator(a: any, b: any): number {
-		if ((typeof a.getTime == 'function') && !isNaN(a.getTime())) {
+		if (a && (typeof a.getTime == 'function') && !isNaN(a.getTime())) {
 			if (a < b) {
 				return 1;
 			} else {
