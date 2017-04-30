@@ -2,7 +2,7 @@
     <div class="col-xl-12">
         <ba-card title="{{season.name}}" baCardClass="with-scroll" *ngIf='tournaments'>
             <ul>
-                <li *ngFor="let tournament of tournaments">
+                <li *ngFor="let tournament of tournaments|order:['date']">
                     <a [routerLink]="['/app/seasons',season.name, tournament.id]">{{tournament.name}}</a>
                     <br />
                     <small>{{tournament.date|date}}<span *ngFor='let extended of tournament.extended'>, {{extended.division_id|division}}</span></small>

@@ -1,10 +1,16 @@
-import {Pipe, PipeTransform } from '@angular/core';
+import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({ name: 'order', pure: true })
 export class OrderBy implements PipeTransform {
 
 	static _orderByComparator(a: any, b: any): number {
-
+		if ((typeof a.getTime == 'function') && !isNaN(a.getTime())) {
+			if (a < b) {
+				return 1;
+			} else {
+				return -1;
+			}
+		}
 		if ((isNaN(parseFloat(a)) || !isFinite(a)) || (isNaN(parseFloat(b)) || !isFinite(b))) {
 			if (!a || !a.localeCompare) return 0;
 			return a.localeCompare(b, "cs");
