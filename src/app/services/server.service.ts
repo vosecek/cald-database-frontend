@@ -27,7 +27,8 @@ import 'rxjs/add/operator/switchMap';
 @Injectable()
 export class ServerService {
     public api = 'http://api.evidence.cald.cz/';
-    // http://cald.yosarin.net/
+    // public api = 'http://cald.yosarin.net/';
+    
 
     public divisions: Division[];
     public leagues: League[];
@@ -179,7 +180,6 @@ export class ServerService {
                     resolve();
                 })
             })]).then(val => {
-                console.log('loaded');
                 return true;
             }, err => {
                 console.log(err);
@@ -204,7 +204,6 @@ export class ServerService {
                     val.rights.forEach(el => {
                         el = el.split(":");
                         if (el[0] == 'admin') {
-                            console.log('admin');
                             resolve(true);
                         }
                     });
