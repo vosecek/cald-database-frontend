@@ -21,7 +21,7 @@ import { OrderBy } from '../pipes/order.pipe';
     </div>
     <footer class="al-footer clearfix">
       <div class="al-footer-main clearfix">
-        <div class="al-copy">&copy; <a href="http://www.cald.cz/">ČALD</a> 2017</div>
+        <div class="al-copy">&copy; <a href="mailto:jiri.vosecek@cald.cz">ČALD</a> 2017</div>
       </div>
     </footer>
     <ba-back-top position="200"></ba-back-top>
@@ -38,7 +38,7 @@ export class Pages {
 
   }
 
-  ngOnInit() {  
+  ngOnInit() {
     this._menuService.updateMenuByRoutes(<Routes>PAGES_MENU);
   }
 }
