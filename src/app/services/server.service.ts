@@ -26,8 +26,8 @@ import 'rxjs/add/operator/switchMap';
 
 @Injectable()
 export class ServerService {
-    // public api = 'http://api.evidence.cald.cz/';
-    public api = 'http://cald.yosarin.net/';
+    public api = 'http://api.evidence.cald.cz/';
+    // public api = 'http://cald.yosarin.net/';
     // public api = 'http://localhost:8080';
     
 
