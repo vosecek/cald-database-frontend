@@ -34,7 +34,7 @@
                             <div class='col-xl-12'>
                                 <h5>Možné duplicity!</h5>
                                 <div *ngFor='let player of duplicate' class='roster'>
-                                    <button (click)='teamDetail(player)' class='btn btn-default btn-with-icon btn-xs'><i class='ion-eye'></i> {{player.id|player}} ({{player.team_id|team}}) </button>
+                                    <button (click)='teamDetail(player)' class='btn btn-default btn-with-icon btn-xs'><i class='ion-eye'></i> {{player.id|player}} ({{player|player_at_team:true}}) </button>
                                 </div>
                                 <p>
                                     Pokud se jedná o stejného hráče, kontaktuj správce evidence na evidence@cald.cz a požádej o přestup hráče.
@@ -76,7 +76,8 @@
                                 </div>
                             </div>
                             <div class='col-xl-6'>
-                                <div class="form-group">
+                                <input type='hidden' formControlName='team' id='team' />
+                                <div class="form-group" *ngIf='access == "admin"'>
                                     <label for="division_ids">Změnit oddíl na</label>
                                     <select class="form-control" formControlName='team' id="team">
                                         <option *ngFor='let team of teams|order:["name"]' value='{{team.id}}'>{{team.name}}</option>

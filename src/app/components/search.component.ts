@@ -1,7 +1,10 @@
 import { Component, Input, Host, Optional } from '@angular/core';
+import { Router } from '@angular/router';
+
 import { Team } from '../types/team';
 import { Player } from '../types/player';
 import { ServerService } from '../services/server.service';
+import { PlayerAtTeam } from '../pipes/player_at_team.pipe';
 
 import { RosterComponent } from '../pages/seasons/season/tournament/roster/roster.component'
 
@@ -18,12 +21,15 @@ export class SearchComponent {
 
   constructor(
     public server: ServerService,
+    private playerAtTeam: PlayerAtTeam,
+    private router: Router,
     @Optional() @Host() public rosterComp: RosterComponent
   ) {
   }
 
   teamDetail(player: Player): void {
-    console.log(player);
+    let team = this.playerAtTeam.transform(player);
+    this.router.navigate(['app', 'teams',team['id']]);
   }
 
   public searchPlayer(): void {

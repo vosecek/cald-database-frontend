@@ -44,7 +44,7 @@ import {
   BaProfilePicturePipe
 } from './pipes';
 
-import { OrderBy, DivisionPipe, PlayerPipe, TeamPipe, TeamMarkPipe, SexPipe, IntersectPipe, FilterPlayersPipe, SeasonPipe } from '../pipes';
+import { OrderBy, DivisionPipe, PlayerPipe, TeamPipe, PlayerAtTeam, TeamMarkPipe, SexPipe, IntersectPipe, FilterPlayersPipe, SeasonPipe } from '../pipes';
 
 import {
   BaImageLoaderService,
@@ -96,6 +96,7 @@ const NGA_PIPES = [
   OrderBy,
   PlayerPipe,
   TeamPipe,
+  PlayerAtTeam,
   TeamMarkPipe,
   SexPipe,
   IntersectPipe,

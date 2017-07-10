@@ -26,8 +26,9 @@ import 'rxjs/add/operator/switchMap';
 
 @Injectable()
 export class ServerService {
-    public api = 'http://api.evidence.cald.cz/';
-    // public api = 'http://cald.yosarin.net/';
+    // public api = 'http://api.evidence.cald.cz/';
+    public api = 'http://cald.yosarin.net/';
+    // public api = 'http://localhost:8080';
     
 
     public divisions: Division[];
@@ -39,11 +40,10 @@ export class ServerService {
     private teams: Team[];
     private seasons: Season[];
     private tournaments: Tournament[];
+    private playerAtTeam: any[];
 
     private user: any;
     private rights: Array<any> = [];
-
-    private toLoad: number = 6;
 
     constructor(
         private http: Http,
@@ -92,6 +92,28 @@ export class ServerService {
             });
         }
 
+        if (type == 'player') {
+            return new Promise((resolve, reject) => {
+                this.get("list/player").subscribe(data => {
+                    this.players = data;
+                    resolve();
+                }, err => {
+                    reject(err);
+                })
+            });
+        }
+
+        if (type == 'player_at_team') {
+            return new Promise((resolve, reject) => {
+                this.get("list/player_at_team").subscribe(data => {
+                    this.playerAtTeam = data;
+                    resolve();
+                }, err => {
+                    reject(err);
+                })
+            });
+        }
+
         if (type == 'tournamentExtendedFull') {
             return new Promise((resolve, reject) => this.get("list/tournament_belongs_to_league_and_division").subscribe(data => {
                 this.tournamentExtendedFull = data;
@@ -101,11 +123,19 @@ export class ServerService {
     }
 
     public init(): Promise<any> {
-        console.info('init app data');
         return Promise.all([
             new Promise((resolve, reject) => {
                 this.get("list/tournament").subscribe(data => {
                     this.tournaments = data;
+                }, err => {
+                    resolve();
+                }, () => {
+                    resolve();
+                })
+            }),
+            new Promise((resolve, reject) => {
+                this.get("list/player_at_team").subscribe(data => {
+                    this.playerAtTeam = data;
                 }, err => {
                     resolve();
                 }, () => {
@@ -238,6 +268,7 @@ export class ServerService {
         if (type == "league") data = this.leagues;
         if (type == "division") data = this.divisions;
         if (type == "tournamentExtended") data = this.tournamentExtended;
+        if (type == "player_at_team") data = this.playerAtTeam;
 
         if (typeof data == "undefined") {
             console.error("Chybi data pro " + type);

@@ -11,8 +11,11 @@ export class PlayerPipe implements PipeTransform {
 	}
 
 
-	transform(id: string, prop?: string): string {
+	transform(id: string, prop?: string): any {
 		let player = this.server.getType("player", id);
+		if(!player){
+			return false;
+		}
 		if (!prop) {
 			let data = [player["last_name"], player["first_name"]].join(" ");
 			return data;

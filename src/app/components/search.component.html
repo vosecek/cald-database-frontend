@@ -9,8 +9,8 @@
         <div *ngIf='queryPlayer.length>2'>
             <h4>Vyhledaní hráči</h4>
             <div *ngFor='let player of foundPlayers|order:["last_name"]' class='roster'>
-                <button *ngIf='type == "teams"' (click)='teamDetail(player)' class='btn btn-default btn-with-icon btn-xs'><i class='ion-eye'></i> {{player.id|player}} ({{player.team_id|team}}) </button>
-                <button *ngIf='type == "roster"' (click)='rosterComp.add(player)' [disabled]='rosterComp.inRoster(player)' class='btn btn-default btn-with-icon btn-xs'><i class='ion-plus-circled'></i> {{player.id|player}} ({{player.team_id|team}}) </button>
+                <button *ngIf='type == "teams"' (click)='teamDetail(player)' class='btn btn-default btn-with-icon btn-xs'><i class='ion-eye'></i> {{player.id|player}} ({{player|player_at_team:true}}) </button>
+                <button *ngIf='type == "roster"' (click)='rosterComp.add(player)' [disabled]='rosterComp.inRoster(player)' class='btn btn-default btn-with-icon btn-xs'><i class='ion-plus-circled'></i> {{player.id|player}} ({{player|player_at_team:true}}) </button>
             </div>
             <div *ngIf='foundPlayers.length ==0 && queryPlayer.length>2'>
                 Žádní hráči nenalezeni

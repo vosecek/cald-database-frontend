@@ -28,6 +28,7 @@ export class TeamDetailComponent implements OnInit {
 	public userForm: FormGroup;
 	public loaded: boolean;
 	public user: Player;
+	protected access: string;
 	duplicate: any[] = [];
 
 	public editable: boolean = false;
@@ -54,19 +55,19 @@ export class TeamDetailComponent implements OnInit {
 	}
 
 	public permission(): void {
-		let access = this.server.permission(this.team.id);
+		this.access = this.server.permission(this.team.id);
 
-		if (access == false) {
+		if (!this.access) {
 			this.editable = false;
 			this.viewable = false;
 		}
 
-		if (access == 'edit' || access == 'admin') {
+		if (this.access == 'edit' || this.access == 'admin') {
 			this.editable = true;
 			this.viewable = true;
 		}
 
-		if (access == 'view') {
+		if (this.access == 'view') {
 			this.editable = false;
 			this.viewable = true;
 		}
@@ -85,7 +86,9 @@ export class TeamDetailComponent implements OnInit {
 			this.userForm.get("last_name").setValue(event.data.last_name);
 			this.userForm.get("email").setValue(event.data.email);
 			this.userForm.get("birth_date").setValue(event.data.birth_date);
-			this.userForm.get("sex").setValue(event.data.sex);
+			this.userForm.get("sex").setValue((event.data.sex == "muž" ? "male" : "female"));
+			this.userForm.get("team").setValue(this.team.id);
+		}else{
 			this.userForm.get("team").setValue(this.team.id);
 		}
 
@@ -112,14 +115,23 @@ export class TeamDetailComponent implements OnInit {
 				this.playerService.assignPlayer2Team(this.userForm.value, this.userForm.value.team).subscribe(val => {
 					this.source.prepend(this.userForm.value);
 				});
+				this.server.reload("player").then(()=>{
+
+				});
+				this.server.reload("player_at_team").then(() => {
+
+				});
 			}, err => {
 				alert(err);
 			});
 			this.hideModal();
 		} else {
-			if (this.team.id != this.userForm.value) {
+			if (this.team.id != this.userForm.controls['team'].value) {
 				this.playerService.deletePlayer2Team(this.userForm.value, this.team.id).subscribe(val => {
 					this.playerService.assignPlayer2Team(this.userForm.value, this.userForm.value.team).subscribe(val => {
+						this.server.reload("player_at_team").then(() => {
+
+						});
 						let result = this.server.getType('team', this.userForm.value.team);
 						alert("Hráč přesunut do týmu " + result.name);
 						this.source.remove(this.user);
@@ -140,7 +152,7 @@ export class TeamDetailComponent implements OnInit {
 			'email': ['', [EmailValidator]],
 			'birth_date': [''],
 			'sex': ['', Validators.required],
-			'team': [{ value: this.team.id, disabled: !this.server.isAdminMenu() }]
+			'team': [{ value: this.team.id }]
 		});
 
 		this.settings = {
@@ -196,6 +208,10 @@ export class TeamDetailComponent implements OnInit {
 				}
 			}
 		}
+
+		if (!this.editable) {
+			delete this.settings['columns']['birth_date'];
+		}
 	}
 
 	ngOnInit(): void {
@@ -222,6 +238,10 @@ export class TeamDetailComponent implements OnInit {
 					f.player.birth_date = date.toISOString().substring(0, 10);
 				}
 			}
+
+			if (f.player.sex == "male") f.player.sex = "muž";
+			if (f.player.sex == "female") f.player.sex = "žena";
+			// f.player
 
 			data.push(f.player);
 		});

@@ -56,6 +56,10 @@ export class RosterComponent {
 	) {
 	}
 
+	protected teamDetail(): void {
+		this.save(true);
+	}
+
 	loadTeam(): void {
 		this.availablePlayers = [];
 		this.server.get('list/player_at_team', { filter: { "team_id": this.selectedTeam }, extend: true }).subscribe(val => {
@@ -77,13 +81,17 @@ export class RosterComponent {
 		this.players2roster.splice(i, 1);
 	}
 
-	private updateFinished(): void {
+	private updateFinished(detail): void {
 		this.sending = false;
 		this.updated = true;
 		this.originPlayers2roster = this.players2roster.slice();
+
+		if (detail) {
+			this.router.navigate(['app', 'teams', this.selectedTeam]);
+		}
 	}
 
-	save(): void {
+	save(detail?: boolean): void {
 		this.sending = true;
 		this.updated = false;
 		let toAdd = this.players2roster.filter(item => this.originPlayers2roster.indexOf(item) < 0);
@@ -91,7 +99,7 @@ export class RosterComponent {
 
 		let finished = 0;
 		if (toAdd.length + toDelete.length === 0) {
-			this.updateFinished();
+			this.updateFinished(detail);
 		}
 
 		toAdd.forEach(item => {
@@ -99,12 +107,12 @@ export class RosterComponent {
 			}, err => {
 				finished++;
 				if (finished == (toAdd.length + toDelete.length)) {
-					this.updateFinished();
+					this.updateFinished(detail);
 				}
 			}, () => {
 				finished++;
 				if (finished == (toAdd.length + toDelete.length)) {
-					this.updateFinished();
+					this.updateFinished(detail);
 				}
 			});
 		});
@@ -114,12 +122,12 @@ export class RosterComponent {
 			}, err => {
 				finished++;
 				if (finished == (toAdd.length + toDelete.length)) {
-					this.updateFinished();
+					this.updateFinished(detail);
 				}
 			}, () => {
 				finished++;
 				if (finished == (toAdd.length + toDelete.length)) {
-					this.updateFinished();
+					this.updateFinished(detail);
 				}
 			});
 		});
