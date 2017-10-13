@@ -3,6 +3,7 @@
         <button type="submit" class="btn btn-primary" (click)="tournament()">Správa turnajů</button>
         <button type="submit" class="btn btn-secondary" (click)="team()">Správa oddílů</button>
         <button type="submit" class="btn btn-warning" (click)="user()">Správa uživatelů</button>
+        <button type="submit" class="btn btn-warning" (click)="fee()">Poplatky CALD</button>
     </div>
 </div>
 <hr />
@@ -138,6 +139,9 @@
         </ba-card>
         <ba-card title="Seznam turnajů" baCardClass="with-scroll" *ngIf='type=="tournament"'>
             <ng2-smart-table [settings]="settings.tournament" (delete)="deleteTournament($event)" (create)=" openTournamentForm($event,true) " (edit)="openTournamentForm($event) " [source]="source.tournament "></ng2-smart-table>
+        </ba-card>
+        <ba-card title="Poplatky za sezonu" baCardClass="with-scroll" *ngIf='type=="fee"'>
+            <!-- <ng2-smart-table [settings]="settings.tournament" (delete)="deleteTournament($event)" (create)=" openTournamentForm($event,true) " (edit)="openTournamentForm($event) " [source]="source.tournament "></ng2-smart-table> -->
         </ba-card>
     </div>
 </div>

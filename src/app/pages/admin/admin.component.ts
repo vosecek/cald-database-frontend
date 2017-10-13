@@ -104,8 +104,13 @@ export class Admin {
 	public saveUser(): void {
 		if (!this.userForm.value.id) {
 			this.server.post('user', this.userForm.value).subscribe(val => {
+				this.server.put("admin/user/" + val.id, { state: "confirmed" }).subscribe(el => {
+					console.log(el);
+				}, err => {
+					console.log(err);
+				});
 				this.userForm.value.privileges.forEach(el => {
-					this.server.post("team/" + el + "/user/" + this.userForm.value.id).subscribe(el => {
+					this.server.post("team/" + el + "/user/" + val.id, { "privilege": "edit" }).subscribe(el => {
 					});
 				});
 				this.convertPrivileges(this.userForm.value);
@@ -189,7 +194,7 @@ export class Admin {
 			event.data.privileges.forEach(el => {
 				if (typeof el == "object") {
 					this.originalPrivileges.push(el['entity_id']);
-				}else{
+				} else {
 					this.originalPrivileges.push(el);
 				}
 			});
@@ -359,6 +364,17 @@ export class Admin {
 		});
 		val.privileges_string = data.join(",");
 		return val;
+	}
+
+	public fee(): void {
+		let seasons = this.server.getType("season");
+		this.server.get("admin/fee", { season_id: seasons[seasons.length - 1].id }).subscribe(val => {
+			console.log(val);
+		}, err => {
+			console.log(err);
+		});
+
+		this.type = "fee";
 	}
 
 	public user(): void {
