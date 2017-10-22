@@ -2,7 +2,6 @@ import { NgModule, ModuleWithProviders } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { NgUploaderModule } from 'ngx-uploader';
 
 
 import {
@@ -14,19 +13,19 @@ import {
 } from './theme.configProvider';
 
 import {
-  BaAmChart,
+  // BaAmChart,
   BaBackTop,
   BaCard,
-  BaChartistChart,
+  // BaChartistChart,
   BaCheckbox,
   BaContentTop,
-  BaFullCalendar,
+  // BaFullCalendar,
   BaMenuItem,
   BaMenu,
   BaMsgCenter,
   BaMultiCheckbox,
   BaPageTop,
-  BaPictureUploader,
+  // BaPictureUploader,
   BaSidebar
 } from './components';
 
@@ -63,19 +62,19 @@ import { RosterComponent } from '../pages/seasons/season/tournament/roster/roste
 import { AlertModule } from 'ng2-bootstrap/alert';
 
 const NGA_COMPONENTS = [
-  BaAmChart,
+  // BaAmChart,
   BaBackTop,
   BaCard,
-  BaChartistChart,
+  // BaChartistChart,
   BaCheckbox,
   BaContentTop,
-  BaFullCalendar,
+  // BaFullCalendar,
   BaMenuItem,
   BaMenu,
   BaMsgCenter,
   BaMultiCheckbox,
   BaPageTop,
-  BaPictureUploader,
+  // BaPictureUploader,
   BaSidebar,
   RosterComponent,
   SearchComponent
@@ -130,7 +129,6 @@ const NGA_VALIDATORS = [
     RouterModule,
     FormsModule,
     ReactiveFormsModule,
-    NgUploaderModule,
     AlertModule.forRoot()
   ],
   exports: [
