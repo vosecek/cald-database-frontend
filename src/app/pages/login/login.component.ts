@@ -28,7 +28,7 @@ export class Login {
     private router: Router,
     private server: ServerService
   ) {
-    if(this.loginService.isLogged()){
+    if (this.loginService.isLogged()) {
       this.logged();
     }
     this.form = fb.group({
@@ -47,7 +47,7 @@ export class Login {
 
   invalid(error: string) {
     alert(error);
-    this.form.setValue({ "username": "", "password": "" })
+    this.form.patchValue({ "password": "" });
     this.errorMessage = error;
   }
 
