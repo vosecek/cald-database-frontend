@@ -13,6 +13,8 @@ import { BirthDate } from './birthDate';
 import { ModalDirective } from 'ng2-bootstrap';
 import { EmailValidator } from '../../../validators/validator';
 
+import * as moment from 'moment';
+
 @Component({
 	selector: 'team-detail',
 	styleUrls: ['./team-detail.scss', '../../../theme/sass/smartTables.scss'],
@@ -76,7 +78,6 @@ export class TeamDetailComponent implements OnInit {
 	public openUserForm(event, create?: boolean) {
 		this.duplicate = [];
 		this.userForm.reset();
-
 		delete this.user;
 
 		if (!create) {
@@ -85,10 +86,10 @@ export class TeamDetailComponent implements OnInit {
 			this.userForm.get("first_name").setValue(event.data.first_name);
 			this.userForm.get("last_name").setValue(event.data.last_name);
 			this.userForm.get("email").setValue(event.data.email);
-			this.userForm.get("birth_date").setValue(event.data.birth_date);
+			this.userForm.get("birth_date").setValue(moment(event.data.birth_date,'DD/MM/YYYY').format("YYYY-MM-DD"));
 			this.userForm.get("sex").setValue((event.data.sex == "muž" ? "male" : "female"));
 			this.userForm.get("team").setValue(this.team.id);
-		}else{
+		} else {
 			this.userForm.get("team").setValue(this.team.id);
 		}
 
@@ -115,7 +116,7 @@ export class TeamDetailComponent implements OnInit {
 				this.playerService.assignPlayer2Team(this.userForm.value, this.userForm.value.team).subscribe(val => {
 					this.source.prepend(this.userForm.value);
 				});
-				this.server.reload("player").then(()=>{
+				this.server.reload("player").then(() => {
 
 				});
 				this.server.reload("player_at_team").then(() => {
@@ -200,7 +201,6 @@ export class TeamDetailComponent implements OnInit {
 				birth_date: {
 					title: 'Datum narození',
 					type: 'string',
-					html5: 'date'
 				},
 				email: {
 					title: 'E-mail',
@@ -235,7 +235,7 @@ export class TeamDetailComponent implements OnInit {
 			if (f.player.birth_date) {
 				let date = new Date(f.player.birth_date);
 				if (!isNaN(date.getTime())) {
-					f.player.birth_date = date.toISOString().substring(0, 10);
+					f.player.birth_date = moment(date).format('DD/MM/YYYY');
 				}
 			}
 
