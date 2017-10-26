@@ -68,6 +68,8 @@ export class Dashboard {
 			}
 			table_header.unshift({ text: "Jméno hráče", bold: true });
 			table_width.unshift("auto");
+			table_header.push({ text: "Poplatek", bold: true });
+			table_width.push("auto");
 
 			duplicita_table_header.unshift({ text: "Jméno hráče", bold: true });
 			duplicita_table_width.unshift("auto");
@@ -84,7 +86,7 @@ export class Dashboard {
 
 			table_body.push(table_header);
 			feeData['fee'][team.name].players.forEach(player => {
-				table_body.push([player]);
+				table_body.push([player,'350 Kč']);
 			});
 
 			duplicita_table_body.push(duplicita_table_header);
@@ -102,8 +104,8 @@ export class Dashboard {
 			{ text: "Datum vystavení dokladu: " + date.toLocaleDateString(), style: "list" },
 			{ text: "Částka: " + feeData['fee'][team.name].fee + ' Kč', style: "list" },
 			{ text: "Celkem členů platících v sezoně: " + feeData['fee'][team.name].players.length, style: "list" },
-			{ text: "Číslo účtu: " + '233012651/0300', style: "list" },
-			{ text: "Variabilní symbol: " + "01" + team.id + new Date().getFullYear(), style: "list" },
+			{ text: "Číslo účtu: " + "233012651/0300", style: "list" },
+			{ text: "Variabilní symbol: " + new Date().getFullYear().toString().substring(2) + "000" + team.id, style: "list" },
 			{ text: "Členové oddílu povinni zaplatit poplatek", style: "subHeader" },
 			{
 				table: {
