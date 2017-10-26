@@ -3,13 +3,13 @@
         <ba-card title="{{teamMark}} - soupiska {{tournament.division_id|division}}" baCardClass="with-scroll">
             <alert type="success" dismissOnTimeout="5000" *ngIf='updated'>Soupiska aktualizována</alert>
             <div class='col-xl-6' [hidden]='!allowOpen'>
-                <h4>Muži</h4>
+                <h4>Muži ({{(players2roster|sex:"male").length}})</h4>
                 <div *ngFor='let player of players2roster|order:["last_name"]|sex:"male"' class='roster'>
                     <button (click)='remove(player)' class='btn btn-default btn-with-icon btn-xs'><i class='ion-trash-a'></i> {{player.id|player}} </button>
                 </div>
             </div>
             <div class='col-xl-6'>
-                <h4>Ženy</h4>
+                <h4>Ženy ({{(players2roster|sex:"female").length}})</h4>
                 <div *ngFor='let player of players2roster|order:["last_name"]|sex:"female"' class='roster'>
                     <button (click)='remove(player)' class='btn btn-default btn-with-icon btn-xs'><i class='ion-trash-a'></i> {{player.id|player}} </button>
                 </div>
