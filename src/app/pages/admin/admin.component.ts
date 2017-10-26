@@ -6,6 +6,8 @@ import { SeasonsService } from '../../services/seasons.service';
 import { TeamsService } from '../../services/teams.service';
 
 import { Season } from '../../types/season';
+import { PlayerAtTeam } from '../../pipes/player_at_team.pipe';
+import { Player } from '../../types/player';
 import { Tournament } from '../../types/tournament';
 import { User } from '../user/user';
 
@@ -17,6 +19,8 @@ import { ModalDirective } from 'ng2-bootstrap';
 import { DateCell } from './dateCell';
 import { TeamCell } from './teamCell';
 
+import { Angular2Csv } from 'angular2-csv/Angular2-csv';
+
 
 @Component({
 	selector: 'admin',
@@ -26,6 +30,8 @@ import { TeamCell } from './teamCell';
 export class Admin {
 	@ViewChild('modal') modal: ModalDirective;
 
+	protected exportForm: FormGroup;
+
 	public tournamentForm: FormGroup;
 	public teamForm: FormGroup;
 	public userForm: FormGroup;
@@ -33,7 +39,7 @@ export class Admin {
 
 	public inEdit: any;
 
-	private seasons: Array<Season>;
+	protected seasons: Array<Season>;
 	public type: string = "";
 
 	private originalPrivileges: Array<any> = [];
@@ -47,7 +53,8 @@ export class Admin {
 	constructor(
 		private server: ServerService,
 		private teams: TeamsService,
-		private fb: FormBuilder
+		private fb: FormBuilder,
+		private playerAtTeam: PlayerAtTeam
 	) {
 	}
 
@@ -366,15 +373,76 @@ export class Admin {
 		return val;
 	}
 
-	public fee(): void {
-		let seasons = this.server.getType("season");
-		this.server.get("admin/fee", { season_id: seasons[seasons.length - 1].id }).subscribe(val => {
-			console.log(val);
-		}, err => {
-			console.log(err);
+	public exportByFilter(): void {
+		let cond = this.exportForm.value;
+		let found = this.server.getType("player").filter((pl: Player) => {
+			if (cond.sex) {
+				if (pl.sex != cond.sex) return false;
+			}
+
+			let ok = false;
+			if (cond.birth_date && pl.birth_date) {
+				let year = parseInt(pl.birth_date.split("-")[0]);
+				switch (cond.birth_date_comparator) {
+					case "<=":
+						ok = year <= cond.birth_date;
+						break;
+					case ">=":
+						ok = year >= cond.birth_date;
+						break;
+					case "==":
+						ok = cond.birth_date == year;
+						break;
+					case ">":
+						ok = year > cond.birth_date;
+						break;
+					case "<":
+						ok = year < cond.birth_date;
+						break;
+				}
+			} else {
+				return false;
+			}
+			return ok;
 		});
 
-		this.type = "fee";
+		let data = [];
+
+		data.push({
+			id: 'ID',
+			team: 'Oddil',
+			first_name: 'Jmeno',
+			last_name: 'Prijmeni',
+			sex: 'Pohlavi',
+			birth_date: 'Datum narozeni',
+			email: 'Email'
+		});
+
+		found.forEach((el: Player) => {
+			data.push({
+				id: el.id,
+				team: this.playerAtTeam.transform(el, true),
+				first_name: el.first_name,
+				last_name: el.last_name,
+				sex: (el.sex ? el.sex : ''),
+				birth_date: (el.birth_date ? el.birth_date : ''),
+				email: (el.email ? el.email : '')
+			});
+		});
+
+		new Angular2Csv(data, 'CALD export', { showLabels: true });
+	}
+
+	public export(): void {
+		this.exportForm = this.fb.group({
+			sex: [],
+			birth_date_comparator: [],
+			birth_date: [],
+			active_in_seasons: []
+		});
+
+		this.exportForm.patchValue({ sex: '', birth_date_comparator: '==', active_in_seasons: [this.seasons[this.seasons.length - 1].id] });
+		this.type = "export";
 	}
 
 	public user(): void {
