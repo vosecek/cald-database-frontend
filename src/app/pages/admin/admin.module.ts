@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, LOCALE_ID } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgaModule } from '../../theme/nga.module';
@@ -38,6 +38,9 @@ import { TeamCell } from "./teamCell";
     Privileges,
     DateCell,
     TeamCell
+  ],
+  providers: [
+    { provide: LOCALE_ID, useValue: 'cs-CZ' }
   ]
 })
 export class AdminModule { }
