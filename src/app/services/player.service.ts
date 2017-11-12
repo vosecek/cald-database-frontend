@@ -1,5 +1,6 @@
 import { Injectable, OnInit } from '@angular/core';
 import { ServerService } from './server.service';
+import { SeasonsService } from './seasons.service';
 import { Observable } from 'rxjs/Rx';
 
 import { Team } from '../types/team';
@@ -9,7 +10,8 @@ import { Player } from '../types/player';
 export class PlayerService {
 
 	constructor(
-		private server: ServerService
+		private server: ServerService,
+		private season: SeasonsService
 	) {
 	}
 
@@ -38,10 +40,12 @@ export class PlayerService {
 	}
 
 	public deletePlayer2Team(player: Player, team: string): Observable<any> {
-		return this.server.delete('/team/' + team + '/player/' + player.id);
+		let season = this.season.getSeason(new Date().getFullYear());
+		return this.server.delete('/team/' + team + '/player/' + player.id, { "season_id": season.id });
 	}
 
 	public assignPlayer2Team(player: Player, team: number): Observable<any> {
-		return this.server.post('/team/' + team + '/player/' + player.id);
+		let season = this.season.getSeason(new Date().getFullYear());
+		return this.server.post('/team/' + team + '/player/' + player.id, { "season_id": season.id });
 	}
 }
