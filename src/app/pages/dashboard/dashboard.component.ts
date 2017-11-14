@@ -81,12 +81,20 @@ export class Dashboard {
 
 			if (!feeData['fee'][team.name]) {
 				alert("Nepodařilo se načíst data, kontaktujte prosím VR ČALD");
+				this.feeLoading = false;
 				return;
 			}
 
 			table_body.push(table_header);
+
+			feeData['fee'][team.name].players.forEach((el, i) => {
+				feeData['fee'][team.name].players[i] = el.split(" ").reverse().join(" ");
+			});
+
+			feeData['fee'][team.name].players = feeData['fee'][team.name].players.sort();
+
 			feeData['fee'][team.name].players.forEach(player => {
-				table_body.push([player,'350 Kč']);
+				table_body.push([player, '350 Kč']);
 			});
 
 			duplicita_table_body.push(duplicita_table_header);
@@ -166,11 +174,16 @@ export class Dashboard {
 
 	private init(): void {
 		this.tournaments = [];
-		this.server.getRights().forEach(data => {
-			if (data.length == 3) {
-				this.teams.push(this.teamsService.getTeam(data[2]));
-			}
-		});
+
+		if (this.server.isAdmin()) {
+			this.teams = this.server.getType("team");
+		} else {
+			this.server.getRights().forEach(data => {
+				if (data.length == 3) {
+					this.teams.push(this.teamsService.getTeam(data[2]));
+				}
+			});
+		}
 
 		let seasons = this.server.getType("season");
 		this.fee_season_id = seasons[seasons.length - 1].id;

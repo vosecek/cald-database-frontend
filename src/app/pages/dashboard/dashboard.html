@@ -21,7 +21,7 @@
             <option *ngFor='let season of server.getType("season")|order:["-name"]' value='{{season.id}}'>{{season.name}}</option>
           </select>
         </div>
-        <div class='' *ngFor="let team of teams|order:['name']" style='margin-top: 1em;'>
+        <div *ngFor="let team of teams|order:['name']" style='margin-top: 1em;'>
           <button class="btn btn-success" (click)='getFee(team)'>Instrukce pro tým {{team.name}}</button>
         </div>
       </ba-card>

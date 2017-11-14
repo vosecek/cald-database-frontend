@@ -32,6 +32,7 @@ export class TeamDetailComponent implements OnInit {
 	public user: Player;
 	protected access: string;
 	duplicate: any[] = [];
+	protected playerHistoryData: any[];
 
 	public editable: boolean = false;
 	public viewable: boolean = false;
@@ -46,7 +47,7 @@ export class TeamDetailComponent implements OnInit {
 		private formBuilder: FormBuilder,
 		private teamsService: TeamsService,
 		private playerService: PlayerService,
-		private server: ServerService
+		protected server: ServerService
 	) {
 		this.loaded = false;
 		this.teams = this.server.getType("team");
@@ -54,6 +55,40 @@ export class TeamDetailComponent implements OnInit {
 
 	hideModal(): void {
 		this.modal.hide();
+	}
+
+	pardonFee(): void {
+		var canPardon = true;
+		this.server.get(['player', this.userForm.value.id, "history"].join("/")).subscribe(val => {
+			val.seasons.forEach(season => {
+				if (parseInt(season.season.id) < parseInt(this.userForm.value.pardonFee) && season.tournaments.length > 0) canPardon = false;
+			});
+
+			if (canPardon) {
+				this.server.post('admin/fee/pardon', { player_id: this.userForm.value.id, season_id: this.userForm.value.pardonFee }).subscribe(val => {
+					alert('Poplatek odpuštěn');
+					this.hideModal();
+				}, err => {
+					alert(err);
+				});
+			} else {
+				alert('Hráč již hrál dříve, sezónní poplatek nelze odpustit');
+			}
+		}, err => {
+			alert(err);
+		});
+	}
+
+	revokePardonFee(): void {
+		alert('Not implemented yet');
+		this.hideModal();
+		// this.server.delete('admin/fee/pardon', { player_id: this.userForm.value.id, season_id: this.userForm.value.pardonFee }).subscribe(val => {
+		// 	console.log(val);
+		// 	alert('Odpustek smazán');
+		// 	this.hideModal();
+		// }, err => {
+		// 	alert(err);
+		// });
 	}
 
 	public permission(): void {
@@ -77,6 +112,7 @@ export class TeamDetailComponent implements OnInit {
 
 	public openUserForm(event, create?: boolean) {
 		this.duplicate = [];
+		this.playerHistoryData = null;
 		this.userForm.reset();
 		delete this.user;
 
@@ -86,9 +122,10 @@ export class TeamDetailComponent implements OnInit {
 			this.userForm.get("first_name").setValue(event.data.first_name);
 			this.userForm.get("last_name").setValue(event.data.last_name);
 			this.userForm.get("email").setValue(event.data.email);
-			this.userForm.get("birth_date").setValue(moment(event.data.birth_date,'DD/MM/YYYY').format("YYYY-MM-DD"));
+			this.userForm.get("birth_date").setValue(moment(event.data.birth_date, 'DD/MM/YYYY').format("YYYY-MM-DD"));
 			this.userForm.get("sex").setValue((event.data.sex == "muž" ? "male" : "female"));
 			this.userForm.get("team").setValue(this.team.id);
+			this.userForm.get("pardonFee").setValue(this.server.getType("season")[0].id);
 		} else {
 			this.userForm.get("team").setValue(this.team.id);
 		}
@@ -153,7 +190,8 @@ export class TeamDetailComponent implements OnInit {
 			'email': ['', [EmailValidator]],
 			'birth_date': [''],
 			'sex': ['', Validators.required],
-			'team': [{ value: this.team.id }]
+			'team': [{ value: this.team.id }],
+			'pardonFee': ['']
 		});
 
 		this.settings = {
@@ -165,7 +203,7 @@ export class TeamDetailComponent implements OnInit {
 				delete: false
 			},
 			pager: {
-				perPage: 30
+				perPage: 50
 			},
 			add: {
 				confirmCreate: true,
@@ -214,6 +252,17 @@ export class TeamDetailComponent implements OnInit {
 		}
 	}
 
+	playerHistory(): void {
+		this.server.get('player/' + this.userForm.value.id + '/history').subscribe(val => {
+			this.playerHistoryData = val;
+			this.playerHistoryData.forEach(el => {
+				el.seasons.forEach(s => {
+					s.show = false;
+				});
+			});
+		});
+	}
+
 	ngOnInit(): void {
 		this.route.params.forEach((params: Params) => {
 			let id = +params['id'];
@@ -241,9 +290,10 @@ export class TeamDetailComponent implements OnInit {
 
 			if (f.player.sex == "male") f.player.sex = "muž";
 			if (f.player.sex == "female") f.player.sex = "žena";
-			// f.player
 
-			data.push(f.player);
+			if (!data.find(it => it.id == f.player.id)) {
+				data.push(f.player);
+			}
 		});
 		this.source.setSort([{ field: 'last_name', direction: 'asc' }]);
 		this.source.load(data);
