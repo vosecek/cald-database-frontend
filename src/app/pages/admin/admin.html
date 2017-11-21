@@ -166,14 +166,15 @@
               <input type='text' class="form-control"  formControlName='birth_date' size='4' placeholder='1987' />
             </div>
           </div>
-          <!-- <div class='col-4'>
+          <div class='col-4'>
             <div class="form-group">
               <label for='active_in_seasons'>Aktivní v sezonách</label>
+              <input type='checkbox' formControlName='active_in_seasons_allowed'/>
               <select multiple class="form-control" formControlName='active_in_seasons' id="active_in_seasons">
                 <option *ngFor='let season of seasons|order:["-name"]' value='{{season.id}}'>{{season.name}}</option>
               </select>
             </div>
-          </div> -->
+          </div>
         </div>
       </div>
       <button *ngIf='type=="export"' [hidden]='sending' [disabled]='exportForm.invalid' class="btn btn-primary confirm-btn" (click)="exportByFilter()">Exportovat dle filtru</button>

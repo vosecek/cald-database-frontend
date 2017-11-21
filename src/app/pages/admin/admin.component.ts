@@ -36,6 +36,7 @@ export class Admin {
 	public teamForm: FormGroup;
 	public userForm: FormGroup;
 	public users: Array<User>;
+	protected sending: boolean = false;
 
 	public inEdit: any;
 
@@ -373,7 +374,9 @@ export class Admin {
 		return val;
 	}
 
+	
 	public exportByFilter(): void {
+		this.sending = true;
 		let cond = this.exportForm.value;
 		let found = this.server.getType("player").filter((pl: Player) => {
 			if (cond.sex) {
@@ -406,31 +409,70 @@ export class Admin {
 			return ok;
 		});
 
-		let data = [];
+		let promises = [];
+		let player_history = {};
+		let toAdd = [];
 
-		data.push({
-			id: 'ID',
-			team: 'Oddil',
-			first_name: 'Jmeno',
-			last_name: 'Prijmeni',
-			sex: 'Pohlavi',
-			birth_date: 'Datum narozeni',
-			email: 'Email'
-		});
+		if (this.exportForm.value.active_in_seasons_allowed) {
+			found.forEach((el: Player) => {
+				promises.push(new Promise((resolve, reject) => {
+					this.server.get(['player', el.id, "history"].join("/")).subscribe(val => {
+						let notActive = false;
+						this.exportForm.value.active_in_seasons.forEach(s => {
+							let season = val.seasons.find(ses => {
+								return (ses.season.id == s);
+							});
+							if (season) {
+								if (season.tournaments.length == 0) {
+									notActive = true;
+								}
+							} else {
+								notActive = true;
+							}
+						});
+						if (notActive == false) {
+							toAdd.push(el);
+						} else {
+						}
 
-		found.forEach((el: Player) => {
-			data.push({
-				id: el.id,
-				team: this.playerAtTeam.transform(el, true),
-				first_name: el.first_name,
-				last_name: el.last_name,
-				sex: (el.sex ? el.sex : ''),
-				birth_date: (el.birth_date ? el.birth_date : ''),
-				email: (el.email ? el.email : '')
+						resolve();
+					}, err => {
+						reject();
+					});
+				}));
 			});
-		});
+		} else {
+			toAdd = found;
+		}
 
-		new Angular2Csv(data, 'CALD export', { showLabels: true });
+		Promise.all(promises).then(() => {
+			let data = [];
+
+			data.push({
+				id: 'ID',
+				team: 'Oddil',
+				first_name: 'Jmeno',
+				last_name: 'Prijmeni',
+				sex: 'Pohlavi',
+				birth_date: 'Datum narozeni',
+				email: 'Email'
+			});
+
+			toAdd.forEach((el: Player) => {
+				data.push({
+					id: el.id,
+					team: this.playerAtTeam.transform(el, true),
+					first_name: el.first_name,
+					last_name: el.last_name,
+					sex: (el.sex ? el.sex : ''),
+					birth_date: (el.birth_date ? el.birth_date : ''),
+					email: (el.email ? el.email : '')
+				});
+			});
+
+			new Angular2Csv(data, 'CALD export', { showLabels: true });
+			this.sending = false;
+		});
 	}
 
 	public export(): void {
@@ -438,6 +480,7 @@ export class Admin {
 			sex: [],
 			birth_date_comparator: [],
 			birth_date: [],
+			active_in_seasons_allowed: [],
 			active_in_seasons: []
 		});
 
