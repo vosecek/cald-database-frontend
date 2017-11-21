@@ -7,6 +7,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { TeamsService } from '../../../services/teams.service';
 import { PlayerService } from '../../../services/player.service';
 import { ServerService } from '../../../services/server.service';
+import { SeasonsService } from '../../../services/seasons.service';
 
 import { LocalDataSource } from 'ng2-smart-table';
 import { BirthDate } from './birthDate';
@@ -47,6 +48,7 @@ export class TeamDetailComponent implements OnInit {
 		private formBuilder: FormBuilder,
 		private teamsService: TeamsService,
 		private playerService: PlayerService,
+		private season: SeasonsService,
 		protected server: ServerService
 	) {
 		this.loaded = false;
@@ -150,7 +152,8 @@ export class TeamDetailComponent implements OnInit {
 		if (!this.userForm.value.id) {
 			this.playerService.createPlayer(this.userForm.value).subscribe(val => {
 				this.userForm.value.id = val.id;
-				this.playerService.assignPlayer2Team(this.userForm.value, this.userForm.value.team).subscribe(val => {
+				let season = this.season.getSeason(new Date().getFullYear());
+				this.playerService.assignPlayer2Team(this.userForm.value, this.userForm.value.team, season.id).subscribe(val => {
 					this.source.prepend(this.userForm.value);
 				});
 				this.server.reload("player").then(() => {
@@ -166,7 +169,7 @@ export class TeamDetailComponent implements OnInit {
 		} else {
 			if (this.team.id != this.userForm.controls['team'].value) {
 				this.playerService.deletePlayer2Team(this.userForm.value, this.team.id).subscribe(val => {
-					this.playerService.assignPlayer2Team(this.userForm.value, this.userForm.value.team).subscribe(val => {
+					this.playerService.assignPlayer2Team(this.userForm.value, this.userForm.value.team,this.userForm.value.pardonFee).subscribe(val => {
 						this.server.reload("player_at_team").then(() => {
 
 						});

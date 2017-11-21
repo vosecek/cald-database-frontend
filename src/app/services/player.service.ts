@@ -44,8 +44,7 @@ export class PlayerService {
 		return this.server.delete('/team/' + team + '/player/' + player.id, { "season_id": season.id });
 	}
 
-	public assignPlayer2Team(player: Player, team: number): Observable<any> {
-		let season = this.season.getSeason(new Date().getFullYear());
-		return this.server.post('/team/' + team + '/player/' + player.id, { "season_id": season.id });
+	public assignPlayer2Team(player: Player, team: number, season: any): Observable<any> {
+		return this.server.post('/team/' + team + '/player/' + player.id, { "season_id": season });
 	}
 }
