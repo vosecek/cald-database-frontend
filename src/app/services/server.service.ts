@@ -256,7 +256,7 @@ export class ServerService {
         return this.tournamentExtended.filter(record => record.tournament_id == id.toString());
     }
 
-    public getType(type: string, val?: string, prop?: string, key?: string, filter?: boolean): any {
+    public getType(type: string, val?: any, prop?: string, key?: string, filter?: boolean): any {
         if (!key) key = "id";
         if (!filter) filter = false;
 

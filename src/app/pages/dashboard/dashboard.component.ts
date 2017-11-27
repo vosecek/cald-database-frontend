@@ -31,7 +31,7 @@ export class Dashboard {
 	) {
 
 		this.rights = this.server.getTeam2Edit();
-
+		this.fee_season_id = this.server.getType("season", new Date().getFullYear(), "id", "name");
 		this.init();
 	}
 
