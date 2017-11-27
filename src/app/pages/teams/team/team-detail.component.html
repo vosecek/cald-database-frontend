@@ -109,12 +109,14 @@
                     <option *ngFor='let team of teams|order:["name"]' value='{{team.id}}'>{{team.name}}</option>
                   </select>
                 </div>
-                <div class="form-group" [hidden]='access != "admin"'>
-                  <label>Odpustit poplatek</label>
-                </div>
-                <div class="form-group">
-                  <button class="btn btn-danger confirm-btn" (click)="pardonFee()">Odpustit</button>
-                  <button class="btn btn-secondary confirm-btn" (click)="revokePardonFee()">Smazat odpustek</button>
+                <div [hidden]='access != "admin"'>
+                  <div class="form-group">
+                    <label>Odpustit poplatek</label>
+                  </div>
+                  <div class="form-group">
+                    <button class="btn btn-danger confirm-btn" (click)="pardonFee()">Odpustit</button>
+                    <button class="btn btn-secondary confirm-btn" (click)="revokePardonFee()">Smazat odpustek</button>
+                  </div>
                 </div>
               </div>
             </div>

@@ -175,7 +175,7 @@ export class Dashboard {
 	private init(): void {
 		this.tournaments = [];
 
-		if (this.server.isAdmin()) {
+		if (this.server.isAdminMenu()) {
 			this.teams = this.server.getType("team");
 		} else {
 			this.server.getRights().forEach(data => {
