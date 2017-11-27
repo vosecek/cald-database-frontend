@@ -16,7 +16,7 @@
         <p>V seznamu jsou všichni členové vašeho Oddílu, kteří tuto sezonu hráli alespoň jeden ligový turnaj. Pokud některý hráč hrál pouze za jiný Oddíl, požádejte na jiri.vosecek@cald.cz o provedení Přestupu hráče k jinému oddílu</p>
         <p>Pokud jsou na seznamu hráči, u kterých lze požádat dle pravidel ČALDu (viz cald.cz) o prominutí poplatku za sezonu, požádejte o to na jiri.vosecek@cald.cz</p>
         <div class="form-group" style='max-width: 50%;'>
-          <label for="fee_season_id">Vygenerovat přehled za sezonu {{server.getType("season",fee_season_id,"name")}}</label>
+          <label for="fee_season_id">Vygenerovat přehled za sezonu {{fee_season_id|season}}</label>
           <!-- <select class="form-control" [(ngModel)]='fee_season_id' id='fee_season_id'>
             <option *ngFor='let season of server.getType("season")|order:["-name"]' value='{{season.id}}'>{{season.name}}</option>
           </select> -->

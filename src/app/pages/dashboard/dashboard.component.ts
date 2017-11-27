@@ -186,7 +186,6 @@ export class Dashboard {
 		}
 
 		let seasons = this.server.getType("season");
-		this.fee_season_id = seasons[seasons.length - 1].id;
 
 		this.server.get('list/tournament').subscribe(data => {
 			let date = new Date();
