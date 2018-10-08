@@ -29,13 +29,14 @@ export class ServerService {
     public api = 'http://api.evidence.cald.cz/';
     // public api = 'http://cald.yosarin.net/';
     // public api = 'http://localhost:8080';
-    
+
 
     public divisions: Division[];
     public leagues: League[];
     private tournamentExtended: TournamentExtended[];
     public tournamentExtendedFull: Array<any>;
 
+    private nationalities: any[];
     private players: Player[];
     private teams: Team[];
     private seasons: Season[];
@@ -49,7 +50,7 @@ export class ServerService {
         private http: Http,
         private router: Router
     ) {
-        
+
     }
 
     public permission(id: string): any {
@@ -88,7 +89,7 @@ export class ServerService {
                     resolve(this.teams);
                 }, err => {
                     reject(err);
-                })
+                });
             });
         }
 
@@ -99,7 +100,7 @@ export class ServerService {
                     resolve();
                 }, err => {
                     reject(err);
-                })
+                });
             });
         }
 
@@ -110,7 +111,7 @@ export class ServerService {
                     resolve();
                 }, err => {
                     reject(err);
-                })
+                });
             });
         }
 
@@ -125,13 +126,22 @@ export class ServerService {
     public init(): Promise<any> {
         return Promise.all([
             new Promise((resolve, reject) => {
+                this.get("list/nationality").subscribe(data => {
+                    this.nationalities = data;
+                }, err => {
+                    resolve();
+                }, () => {
+                    resolve();
+                });
+            }),
+            new Promise((resolve, reject) => {
                 this.get("list/tournament").subscribe(data => {
                     this.tournaments = data;
                 }, err => {
                     resolve();
                 }, () => {
                     resolve();
-                })
+                });
             }),
             new Promise((resolve, reject) => {
                 this.get("list/player_at_team").subscribe(data => {
@@ -140,7 +150,7 @@ export class ServerService {
                     resolve();
                 }, () => {
                     resolve();
-                })
+                });
             }),
             new Promise((resolve, reject) => {
                 this.get("list/division").subscribe(data => {
@@ -149,7 +159,7 @@ export class ServerService {
                     resolve();
                 }, () => {
                     resolve();
-                })
+                });
             }),
             new Promise((resolve, reject) => {
                 this.get("list/league").subscribe(data => {
@@ -158,7 +168,7 @@ export class ServerService {
                     resolve();
                 }, () => {
                     resolve();
-                })
+                });
             }),
             new Promise((resolve, reject) => {
                 this.get("list/tournament_belongs_to_league_and_division").subscribe(data => {
@@ -167,7 +177,7 @@ export class ServerService {
                     resolve();
                 }, () => {
                     resolve();
-                })
+                });
             }),
             new Promise((resolve, reject) => {
                 this.get("user/me").subscribe((val) => {
@@ -181,7 +191,7 @@ export class ServerService {
                     resolve();
                 }, () => {
                     resolve();
-                })
+                });
             }),
             new Promise((resolve, reject) => {
                 this.get("list/player").subscribe(data => {
@@ -190,7 +200,7 @@ export class ServerService {
                     resolve();
                 }, () => {
                     resolve();
-                })
+                });
             }),
             new Promise((resolve, reject) => {
                 this.get("list/season").subscribe(data => {
@@ -199,7 +209,7 @@ export class ServerService {
                     resolve();
                 }, () => {
                     resolve();
-                })
+                });
             }),
             new Promise((resolve, reject) => {
                 this.get("list/team").subscribe(data => {
@@ -208,12 +218,12 @@ export class ServerService {
                     resolve();
                 }, () => {
                     resolve();
-                })
+                });
             })]).then(val => {
-                return true;
-            }, err => {
-                console.log(err);
-            });
+            return true;
+        }, err => {
+            console.log(err);
+        });
     }
 
     public isAdminMenu(): boolean {
@@ -227,7 +237,7 @@ export class ServerService {
     }
 
     public isAdmin(): Promise<boolean> {
-        var access = false
+        var access = false;
         if (this.rights.length == 0) {
             return new Promise((resolve, reject) => {
                 this.get("user/me").subscribe((val) => {
@@ -269,6 +279,7 @@ export class ServerService {
         if (type == "division") data = this.divisions;
         if (type == "tournamentExtended") data = this.tournamentExtended;
         if (type == "player_at_team") data = this.playerAtTeam;
+        if (type == "nationality") data = this.nationalities;
 
         if (typeof data == "undefined") {
             console.error("Chybi data pro " + type);
@@ -285,6 +296,8 @@ export class ServerService {
         } else {
             var record = data.find((record: any) => record[key] == val.toString());
 
+            if (!record) return null;
+
             if (!prop) {
                 return record;
             } else {
@@ -294,14 +307,14 @@ export class ServerService {
     }
 
     public post(path: string, params = {}): Observable<any> {
-        let headers = new Headers({ 'Content-Type': 'application/json' });
-        let options = new RequestOptions({ headers: headers });
+        let headers = new Headers({'Content-Type': 'application/json'});
+        let options = new RequestOptions({headers: headers});
         return this.http.post(this.tokenUrl(path), params, options).map(this.extractData).catch(this.handleError.bind(this));
     }
 
     public put(path: string, params = {}): Observable<any> {
-        let headers = new Headers({ 'Content-Type': 'application/json' });
-        let options = new RequestOptions({ headers: headers });
+        let headers = new Headers({'Content-Type': 'application/json'});
+        let options = new RequestOptions({headers: headers});
         return this.http.put(this.tokenUrl(path), params, options).map(this.extractData).catch(this.handleError.bind(this));
     }
 
@@ -317,8 +330,8 @@ export class ServerService {
             query = "&" + query;
         }
 
-        let headers = new Headers({ 'Content-Type': 'application/json' });
-        let options = new RequestOptions({ headers: headers });
+        let headers = new Headers({'Content-Type': 'application/json'});
+        let options = new RequestOptions({headers: headers});
         return this.http.delete(this.tokenUrl(path) + query, options).map(this.extractData).catch(this.handleError.bind(this));
     }
 
@@ -338,7 +351,7 @@ export class ServerService {
                 }
             }
         }
-        return this.http.get(this.api + path, { search: params }).map(this.extractData).catch(this.handleError.bind(this));
+        return this.http.get(this.api + path, {search: params}).map(this.extractData).catch(this.handleError.bind(this));
     }
 
     protected extractData(res: Response) {
