@@ -97,7 +97,7 @@ export class Dashboard {
             feeData['fee'][team.name].players = feeData['fee'][team.name].players.sort();
 
             feeData['fee'][team.name].players.forEach(player => {
-                table_body.push([player, '350 Kč']);
+                table_body.push([player, '400 Kč']);
             });
 
             duplicita_table_body.push(duplicita_table_header);
