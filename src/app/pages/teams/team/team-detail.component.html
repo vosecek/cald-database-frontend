@@ -122,6 +122,11 @@
             </div>
           </div>
         </div>
+          <div [formGroup]="">
+              <div class="form-group" *ngIf='userForm.value.id'>
+                  <button *ngIf='!showAddressForm()' (click)='showAddressForm(false)' class='btn btn-with-icon btn-secondary'><i class="ion-information"></i>Přidat adresu</button>
+              </div>
+          </div>
         <div class="modal-footer">
           <button *ngIf='playerHistoryData' class='btn btn-danger' (click)='playerHistoryData = null'>Zpět na detail hráče</button>
           <button *ngIf='!playerHistoryData' [disabled]='userForm.invalid' class="btn btn-primary confirm-btn" (click)="saveUser()">Uložit</button>

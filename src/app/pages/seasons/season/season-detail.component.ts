@@ -29,6 +29,7 @@ export class SeasonDetail {
 
 			this.season = this.seasonsService.getSeason(year);
 			this.seasonsService.getTournaments(this.season.id).subscribe(tournaments => {
+				console.log(tournaments);
 				this.tournaments = [];
 				tournaments.forEach((data: Tournament) => {
 					data['extended'] = [];

@@ -3,6 +3,7 @@
     <button type="submit" class="btn btn-primary" (click)="tournament()">Správa turnajů</button>
     <button type="submit" class="btn btn-secondary" (click)="team()">Správa oddílů</button>
     <button type="submit" class="btn btn-warning" (click)="user()">Správa uživatelů</button>
+    <button type="submit" class="btn btn-light" (click)="nationality()">Správa národností</button>
     <button type="submit" class="btn btn-secondary" (click)="export()">Export dle filtrů</button>
   </div>
 </div>
@@ -26,6 +27,10 @@
         <div *ngIf='type=="tournament"'>
           <h4 *ngIf="tournamentForm.get('id').value" class="modal-title">Úprava turnaje</h4>
           <h4 *ngIf="!tournamentForm.get('id').value" class="modal-title">Vytvořit nový turnaj</h4>
+        </div>
+        <div *ngIf='type=="nationality"'>
+          <h4 *ngIf="nationalityForm.get('id').value" class="modal-title">Úprava narodnosti</h4>
+          <h4 *ngIf="!nationalityForm.get('id').value" class="modal-title">Vytvořit novou narodnost</h4>
         </div>
       </div>
       <div class="modal-body">
@@ -67,6 +72,17 @@
             <select multiple class="form-control" formControlName='privileges' id="privileges">
               <option *ngFor='let team of teamsOptions|order:["title"]' value='{{team.value}}'>{{team.title}}</option>
             </select>
+          </div>
+        </form>
+        <form *ngIf='type=="nationality"' [formGroup]="nationalityForm" novalidate (submit)="nationality(true)" autocomplete="off">
+          <input type='hidden' formControlName='id' />
+          <div class="form-group" [ngClass]='{"has-error":!nationalityForm.get("name").valid && nationalityForm.get("name").touched}' autocomplete="off">
+            <label for="email">Název</label>
+            <input type="text" class="form-control" formControlName='name'>
+          </div>
+          <div class="form-group" [ngClass]='{"has-error":!nationalityForm.get("country_name").valid && nationalityForm.get("country_name").touched}' autocomplete="off">
+            <label for="email">Stát</label>
+            <input type="text" class="form-control" formControlName='country_name'>
           </div>
         </form>
         <form [formGroup]="tournamentForm" novalidate (submit)="tournament(true)" *ngIf='type=="tournament"'>
@@ -122,6 +138,7 @@
         </form>
       </div>
       <div class="modal-footer">
+        <button *ngIf='type=="nationality"' [hidden]='sending' [disabled]='nationalityForm.invalid' class="btn btn-primary confirm-btn" (click)="saveNationality()">Uložit</button>
         <button *ngIf='type=="user"' [hidden]='sending' [disabled]='userForm.invalid' class="btn btn-primary confirm-btn" (click)="saveUser()">Uložit</button>
         <button *ngIf='type=="team"' [hidden]='sending' [disabled]='teamForm.invalid' class="btn btn-primary confirm-btn" (click)="saveTeam()">Uložit</button>
         <button *ngIf='type=="tournament"' [hidden]='sending' [disabled]='tournamentForm.invalid' class="btn btn-primary confirm-btn" (click)="saveTournament()">Uložit</button>
@@ -137,8 +154,11 @@
     <ba-card title="Seznam oddílů" baCardClass="with-scroll" *ngIf='type=="team"'>
       <ng2-smart-table [settings]="settings.team" (create)="openTeamForm($event,true)" (edit)="openTeamForm($event)" [source]="source.team"></ng2-smart-table>
     </ba-card>
+    <ba-card title="Seznam národností" baCardClass="with-scroll" *ngIf='type=="nationality"'>
+      <ng2-smart-table [settings]="settings.nationality" (delete)="deleteNationality($event)" (create)="openNationalityForm($event)" (edit)="openNationalityForm($event)" [source]="source.nationality"></ng2-smart-table>
+    </ba-card>
     <ba-card title="Seznam turnajů" baCardClass="with-scroll" *ngIf='type=="tournament"'>
-      <ng2-smart-table [settings]="settings.tournament" (delete)="deleteTournament($event)" (create)=" openTournamentForm($event,true) " (edit)="openTournamentForm($event) " [source]="source.tournament "></ng2-smart-table>
+      <ng2-smart-table [settings]="settings.tournament" (delete)="deleteTournament($event)" (create)="openTournamentForm($event,true)" (edit)="openTournamentForm($event)" [source]="source.tournament"></ng2-smart-table>
     </ba-card>
     <ba-card title="Export do CSV" baCardClass="with-scroll" *ngIf='type=="export"'>
       <div [formGroup]='exportForm'>

@@ -23,553 +23,650 @@ import { Angular2Csv } from 'angular2-csv/Angular2-csv';
 
 
 @Component({
-	selector: 'admin',
-	styleUrls: ['./admin.scss', '../../theme/sass/smartTables.scss'],
-	templateUrl: './admin.html'
+    selector: 'admin',
+    styleUrls: ['./admin.scss', '../../theme/sass/smartTables.scss'],
+    templateUrl: './admin.html'
 })
 export class Admin {
-	@ViewChild('modal') modal: ModalDirective;
+    @ViewChild('modal') modal: ModalDirective;
 
-	protected exportForm: FormGroup;
+    protected exportForm: FormGroup;
 
-	public tournamentForm: FormGroup;
-	public teamForm: FormGroup;
-	public userForm: FormGroup;
-	public users: Array<User>;
-	protected sending: boolean = false;
+    public nationalityForm: FormGroup;
+    public tournamentForm: FormGroup;
+    public teamForm: FormGroup;
+    public userForm: FormGroup;
+    public users: Array<User>;
+    protected sending: boolean = false;
 
-	public inEdit: any;
+    public inEdit: any;
 
-	protected seasons: Array<Season>;
-	public type: string = "";
+    protected seasons: Array<Season>;
+    public type: string = "";
 
-	private originalPrivileges: Array<any> = [];
+    private originalPrivileges: Array<any> = [];
 
-	private teamsOptions: Array<{ value: string, title: string }> = [];
+    private teamsOptions: Array<{ value: string, title: string }> = [];
 
-	userQuery: string = '';
-	source: { 'user', 'team', 'tournament' } = { 'user': LocalDataSource, 'team': LocalDataSource, 'tournament': LocalDataSource };
-	settings: { 'user', 'team', 'tournament' } = { 'user': {}, 'team': {}, 'tournament': {} };
+    userQuery: string = '';
+    source: { 'user', 'team', 'tournament', 'nationality' } = {
+        'user': LocalDataSource,
+        'team': LocalDataSource,
+        'tournament': LocalDataSource,
+        'nationality': LocalDataSource,
+    };
+    settings: { 'user', 'team', 'tournament', 'nationality' } = {
+        'user': {},
+        'team': {},
+        'tournament': {},
+        'nationality': {}
+    };
 
-	constructor(
-		private server: ServerService,
-		private teams: TeamsService,
-		private fb: FormBuilder,
-		private playerAtTeam: PlayerAtTeam
-	) {
-	}
+    constructor(
+        private server: ServerService,
+        private teams: TeamsService,
+        private fb: FormBuilder,
+        private playerAtTeam: PlayerAtTeam
+    ) {
+    }
 
-	hideModal(): void {
-		this.modal.hide();
-	}
+    hideModal(): void {
+        this.modal.hide();
+    }
 
-	public deleteTournament($data, $source): void {
-		let ok = confirm("Opravdu smazat turnaj " + $data.data.name + "?");
-		if (ok) {
-			this.server.delete("admin/tournament/" + $data.data.id).subscribe(val => {
-				this.source.tournament.remove($data.data).then(val => {
-				});
-			});
-		}
-	}
+    public deleteNationality($data): void {
+        console.log($data);
+    }
 
-	public saveTournament(): void {
-		let path = ["admin", "tournament"];
-		if (this.tournamentForm.value.id) {
-			path.push(this.tournamentForm.value.id);
-			this.server.put(path.join("/"), this.tournamentForm.value).subscribe(val => {
-				this.source.tournament.update(this.inEdit, this.tournamentForm.value);
-				this.server.reload("tournamentExtendedFull").then(data => {
-					this.tournament();
-				});
-				this.hideModal();
-			});
-		} else {
-			this.server.post(path.join("/"), this.tournamentForm.value).subscribe(val => {
-				this.source.tournament.prepend(this.tournamentForm.value);
-				this.server.reload("tournamentExtendedFull").then(data => {
-					this.tournament();
-				});
-				this.hideModal();
-			});
-		}
-	}
+    public openNationalityForm(data): void {
 
-	public saveTeam(): void {
-		let path = ["team"];
+        data = data || null;
+        this.nationalityForm.reset();
 
-		if (this.teamForm.value.id) {
-			path.push(this.teamForm.value.id);
-			this.source.team.update(this.inEdit, this.teamForm.value);
-		} else {
-			this.source.team.prepend(this.teamForm.value);
-		}
-		this.server.post(path.join("/"), this.teamForm.value).subscribe(val => {
-			this.hideModal();
-		});
-	}
+        if (data.data) {
+            this.nationalityForm.controls['id'].patchValue(data.data.id);
+            this.nationalityForm.controls['name'].patchValue(data.data.name);
+            this.nationalityForm.controls['country_name'].patchValue(data.data.country_name);
+        }
 
-	public saveUser(): void {
-		if (!this.userForm.value.id) {
-			this.server.post('user', this.userForm.value).subscribe(val => {
-				this.server.put("admin/user/" + val.id, { state: "confirmed" }).subscribe(el => {
-					console.log(el);
-				}, err => {
-					console.log(err);
-				});
-				this.userForm.value.privileges.forEach(el => {
-					this.server.post("team/" + el + "/user/" + val.id, { "privilege": "edit" }).subscribe(el => {
-					});
-				});
-				this.convertPrivileges(this.userForm.value);
-				this.source.user.prepend(this.userForm.value);
-				this.hideModal();
-			});
-		} else {
-			let toDelete = this.originalPrivileges.filter(item => this.userForm.value.privileges.indexOf(item) < 0);
-			let toAdd = this.userForm.value.privileges.filter(item => this.originalPrivileges.indexOf(item) < 0);
+        this.modal.show();
+    }
 
-			this.server.put('admin/user/' + this.userForm.value.id, this.userForm.value).subscribe(val => {
-				toDelete.forEach(el => {
-					this.server.delete("team/" + el + "/user/" + this.userForm.value.id, { "privilege": "edit" }).subscribe(el => {
-					});
-				});
+    public deleteTournament($data, $source): void {
+        let ok = confirm("Opravdu smazat turnaj " + $data.data.name + "?");
+        if (ok) {
+            this.server.delete("admin/tournament/" + $data.data.id).subscribe(val => {
+                this.source.tournament.remove($data.data).then(val => {
+                });
+            });
+        }
+    }
 
-				toAdd.forEach(el => {
-					this.server.post("team/" + el + "/user/" + this.userForm.value.id, { "privilege": "edit" }).subscribe(el => {
-					});
-				});
+    public saveTournament(): void {
+        let path = ["admin", "tournament"];
+        if (this.tournamentForm.value.id) {
+            path.push(this.tournamentForm.value.id);
+            this.server.put(path.join("/"), this.tournamentForm.value).subscribe(val => {
+                this.source.tournament.update(this.inEdit, this.tournamentForm.value);
+                this.server.reload("tournamentExtendedFull").then(data => {
+                    this.tournament();
+                });
+                this.hideModal();
+            });
+        } else {
+            this.server.post(path.join("/"), this.tournamentForm.value).subscribe(val => {
+                this.source.tournament.prepend(this.tournamentForm.value);
+                this.server.reload("tournamentExtendedFull").then(data => {
+                    this.tournament();
+                });
+                this.hideModal();
+            });
+        }
+    }
 
-				this.convertPrivileges(this.userForm.value);
-				this.source.user.update(this.inEdit, this.userForm.value);
-				this.hideModal();
-			});
-		}
-	}
+    public saveNationality(): void {
+        let path = ["admin", "nationality"];
 
-	public openTournamentForm(event, create?: boolean): void {
-		this.tournamentForm.reset();
-		delete this.inEdit;
+        if (this.nationalityForm.value.id) {
+            path.push(this.nationalityForm.value.id);
+            this.source.nationality.update(this.inEdit, this.nationalityForm.value);
+            this.server.put(path.join("/"), this.nationalityForm.value).subscribe(val => {
+                this.hideModal();
+            });
+        } else {
+            this.source.nationality.prepend(this.nationalityForm.value);
+            this.server.post(path.join("/"), this.nationalityForm.value).subscribe(val => {
+                this.hideModal();
+            });
+        }
+    }
 
-		if (event.data) {
-			this.inEdit = event.data;
+    public saveTeam(): void {
+        let path = ["team"];
 
-			let record = this.server.getType("tournament", event.data.id)
-			if (!create && record) {
-				var extended = this.server.getType("tournamentExtended", record.id, null, 'tournament_id', true);
-				let leagues = [];
-				let divisions = [];
-				extended.forEach(el => {
-					divisions.push(el.division_id);
-					leagues.push(el.league_id);
-				});
+        if (this.teamForm.value.id) {
+            path.push(this.teamForm.value.id);
+            this.source.team.update(this.inEdit, this.teamForm.value);
+        } else {
+            this.source.team.prepend(this.teamForm.value);
+        }
+        this.server.post(path.join("/"), this.teamForm.value).subscribe(val => {
+            this.hideModal();
+        });
+    }
 
-				this.tournamentForm.get("id").setValue(record.id);
-				this.tournamentForm.get("name").setValue(record.name);
-				this.tournamentForm.get("date").setValue(record.date);
-				this.tournamentForm.get("location").setValue(record.location);
-				this.tournamentForm.get("season_id").setValue(record.season_id);
-				this.tournamentForm.get("league_ids").setValue(leagues);
-				this.tournamentForm.get("division_ids").setValue(divisions);
-			}
-			this.modal.show();
-		} else {
-			this.modal.show();
-		}
-	}
+    public saveUser(): void {
+        if (!this.userForm.value.id) {
+            this.server.post('user', this.userForm.value).subscribe(val => {
+                this.server.put("admin/user/" + val.id, {state: "confirmed"}).subscribe(el => {
+                    console.log(el);
+                }, err => {
+                    console.log(err);
+                });
+                this.userForm.value.privileges.forEach(el => {
+                    this.server.post("team/" + el + "/user/" + val.id, {"privilege": "edit"}).subscribe(el => {
+                    });
+                });
+                this.convertPrivileges(this.userForm.value);
+                this.source.user.prepend(this.userForm.value);
+                this.hideModal();
+            });
+        } else {
+            let toDelete = this.originalPrivileges.filter(item => this.userForm.value.privileges.indexOf(item) < 0);
+            let toAdd = this.userForm.value.privileges.filter(item => this.originalPrivileges.indexOf(item) < 0);
 
-	public openTeamForm(event, create?: boolean): void {
-		this.teamForm.reset();
+            this.server.put('admin/user/' + this.userForm.value.id, this.userForm.value).subscribe(val => {
+                toDelete.forEach(el => {
+                    this.server.delete("team/" + el + "/user/" + this.userForm.value.id, {"privilege": "edit"}).subscribe(el => {
+                    });
+                });
 
-		if (!create) {
-			this.inEdit = event.data;
-			this.teamForm.get("id").setValue(event.data.id);
-			this.teamForm.get("name").setValue(event.data.name);
-			this.teamForm.get("founded_at").setValue(event.data.founded_at);
-			this.teamForm.get("city").setValue(event.data.city);
-			this.teamForm.get("www").setValue(event.data.www);
-		}
-		this.modal.show();
-	}
+                toAdd.forEach(el => {
+                    this.server.post("team/" + el + "/user/" + this.userForm.value.id, {"privilege": "edit"}).subscribe(el => {
+                    });
+                });
 
-	public openUserForm(event, create?: boolean) {
-		this.userForm.reset();
+                this.convertPrivileges(this.userForm.value);
+                this.source.user.update(this.inEdit, this.userForm.value);
+                this.hideModal();
+            });
+        }
+    }
 
-		this.originalPrivileges = [];
+    public openTournamentForm(event, create?: boolean): void {
+        this.tournamentForm.reset();
+        delete this.inEdit;
 
-		if (!create) {
-			this.inEdit = event.data;
-			event.data.privileges.forEach(el => {
-				if (typeof el == "object") {
-					this.originalPrivileges.push(el['entity_id']);
-				} else {
-					this.originalPrivileges.push(el);
-				}
-			});
-			this.userForm.get("privileges").setValue(this.originalPrivileges);
+        if (event.data) {
+            this.inEdit = event.data;
 
-			this.userForm.get("id").setValue(event.data.id);
-			this.userForm.get("login").setValue(event.data.login);
-			this.userForm.get("email").setValue(event.data.email);
-			this.userForm.removeControl('password');
-			this.userForm.setControl("password", new FormControl("", []));
-		} else {
-			this.userForm.removeControl('password');
-			this.userForm.setControl("password", new FormControl("", [Validators.required, Validators.minLength(6)]));
-		}
+            let record = this.server.getType("tournament", event.data.id);
+            if (!create && record) {
+                var extended = this.server.getType("tournamentExtended", record.id, null, 'tournament_id', true);
+                let leagues = [];
+                let divisions = [];
+                extended.forEach(el => {
+                    divisions.push(el.division_id);
+                    leagues.push(el.league_id);
+                });
 
-		this.modal.show();
-	}
+                this.tournamentForm.get("id").setValue(record.id);
+                this.tournamentForm.get("name").setValue(record.name);
+                this.tournamentForm.get("date").setValue(record.date);
+                this.tournamentForm.get("location").setValue(record.location);
+                this.tournamentForm.get("season_id").setValue(record.season_id);
+                this.tournamentForm.get("league_ids").setValue(leagues);
+                this.tournamentForm.get("division_ids").setValue(divisions);
+            }
+            this.modal.show();
+        } else {
+            this.modal.show();
+        }
+    }
 
-	private initSettings() {
-		this.settings.user = {
-			mode: "external",
-			actions: {
-				columnTitle: "Úprava",
-				add: true,
-				edit: true,
-				delete: false
-			},
-			pager: {
-				perPage: 10
-			},
-			add: {
-				addButtonContent: '<i class="ion-ios-plus-outline"></i>',
-				createButtonContent: '<i class="ion-checkmark"></i>',
-				cancelButtonContent: '<i class="ion-close"></i>',
-			},
-			edit: {
-				editButtonContent: '<i class="ion-edit"></i>',
-				saveButtonContent: '<i class="ion-checkmark"></i>',
-				cancelButtonContent: '<i class="ion-close"></i>',
-			},
-			columns: {
-				login: {
-					title: 'login',
-					type: 'string'
-				},
-				email: {
-					title: 'e-mail',
-					type: 'string'
-				},
-				privileges_string: {
-					title: 'oddíly',
-					type: 'custom',
-					renderComponent: TeamCell
-				}
-			}
-		};
+    public openTeamForm(event, create?: boolean): void {
+        this.teamForm.reset();
 
-		this.settings.tournament = {
-			mode: "external",
-			actions: {
-				columnTitle: "Úprava",
-				add: true,
-				edit: true,
-				delete: true
-			},
-			pager: {
-				perPage: 20
-			},
-			add: {
-				addButtonContent: '<i class="ion-ios-plus-outline"></i>',
-				createButtonContent: '<i class="ion-checkmark"></i>',
-				cancelButtonContent: '<i class="ion-close"></i>',
-			},
-			edit: {
-				editButtonContent: '<i class="ion-edit"></i>',
-				saveButtonContent: '<i class="ion-checkmark"></i>',
-				cancelButtonContent: '<i class="ion-close"></i>',
-			},
-			delete: {
-				deleteButtonContent: '<i class="ion-trash-a"></i>',
-				confirmDelete: true
-			},
-			columns: {
-				name: {
-					title: 'Název',
-					type: 'string'
-				},
-				location: {
-					title: 'Místo konání',
-					type: 'string'
-				},
-				date: {
-					title: 'Datum',
-					type: 'string'
-				},
-				league: {
-					title: 'Liga',
-					type: 'string'
-				},
-				division: {
-					title: 'Divize',
-					type: 'string'
-				},
-				season: {
-					title: 'Sezona',
-					type: 'string'
-				}
-			}
-		};
+        if (!create) {
+            this.inEdit = event.data;
+            this.teamForm.get("id").setValue(event.data.id);
+            this.teamForm.get("name").setValue(event.data.name);
+            this.teamForm.get("founded_at").setValue(event.data.founded_at);
+            this.teamForm.get("city").setValue(event.data.city);
+            this.teamForm.get("www").setValue(event.data.www);
+        }
+        this.modal.show();
+    }
 
-		this.settings.team = {
-			mode: "external",
-			actions: {
-				columnTitle: "Úprava",
-				add: true,
-				edit: true,
-				delete: false
-			},
-			pager: {
-				perPage: 20
-			},
-			add: {
-				addButtonContent: '<i class="ion-ios-plus-outline"></i>',
-				createButtonContent: '<i class="ion-checkmark"></i>',
-				cancelButtonContent: '<i class="ion-close"></i>',
-			},
-			edit: {
-				editButtonContent: '<i class="ion-edit"></i>',
-				saveButtonContent: '<i class="ion-checkmark"></i>',
-				cancelButtonContent: '<i class="ion-close"></i>',
-			},
-			columns: {
-				name: {
-					title: 'Název',
-					type: 'string'
-				},
-				city: {
-					title: 'Město',
-					type: 'string'
-				},
-				www: {
-					title: 'Web',
-					type: 'string'
-				},
-				email: {
-					title: 'E-mail',
-					type: 'string'
-				},
-				founded_at: {
-					title: 'Založeno',
-					type: 'custom',
-					renderComponent: DateCell
-				}
-			}
-		};
-	}
+    public openUserForm(event, create?: boolean) {
+        this.userForm.reset();
 
-	private convertPrivileges(val: any): any[] {
-		var data = [];
-		val.privileges_string = "";
-		val.privileges.forEach(x => {
-			if (typeof x == "object" && x.entity_id) {
-				data.push(x.entity_id);
-			} else {
-				data.push(x);
-			}
-		});
-		val.privileges_string = data.join(",");
-		return val;
-	}
+        this.originalPrivileges = [];
 
-	
-	public exportByFilter(): void {
-		this.sending = true;
-		let cond = this.exportForm.value;
-		let found = this.server.getType("player").filter((pl: Player) => {
-			if (cond.sex) {
-				if (pl.sex != cond.sex) return false;
-			}
+        if (!create) {
+            this.inEdit = event.data;
+            event.data.privileges.forEach(el => {
+                if (typeof el == "object") {
+                    this.originalPrivileges.push(el['entity_id']);
+                } else {
+                    this.originalPrivileges.push(el);
+                }
+            });
+            this.userForm.get("privileges").setValue(this.originalPrivileges);
 
-			let ok = false;
-			if (cond.birth_date && pl.birth_date) {
-				let year = parseInt(pl.birth_date.split("-")[0]);
-				switch (cond.birth_date_comparator) {
-					case "<=":
-						ok = year <= cond.birth_date;
-						break;
-					case ">=":
-						ok = year >= cond.birth_date;
-						break;
-					case "==":
-						ok = cond.birth_date == year;
-						break;
-					case ">":
-						ok = year > cond.birth_date;
-						break;
-					case "<":
-						ok = year < cond.birth_date;
-						break;
-				}
-			} else {
-				return false;
-			}
-			return ok;
-		});
+            this.userForm.get("id").setValue(event.data.id);
+            this.userForm.get("login").setValue(event.data.login);
+            this.userForm.get("email").setValue(event.data.email);
+            this.userForm.removeControl('password');
+            this.userForm.setControl("password", new FormControl("", []));
+        } else {
+            this.userForm.removeControl('password');
+            this.userForm.setControl("password", new FormControl("", [Validators.required, Validators.minLength(6)]));
+        }
 
-		let promises = [];
-		let player_history = {};
-		let toAdd = [];
+        this.modal.show();
+    }
 
-		if (this.exportForm.value.active_in_seasons_allowed) {
-			found.forEach((el: Player) => {
-				promises.push(new Promise((resolve, reject) => {
-					this.server.get(['player', el.id, "history"].join("/")).subscribe(val => {
-						let notActive = false;
-						this.exportForm.value.active_in_seasons.forEach(s => {
-							let season = val.seasons.find(ses => {
-								return (ses.season.id == s);
-							});
-							if (season) {
-								if (season.tournaments.length == 0) {
-									notActive = true;
-								}
-							} else {
-								notActive = true;
-							}
-						});
-						if (notActive == false) {
-							toAdd.push(el);
-						} else {
-						}
+    private initSettings() {
+        this.settings.user = {
+            mode: "external",
+            actions: {
+                columnTitle: "Úprava",
+                add: true,
+                edit: true,
+                delete: false
+            },
+            pager: {
+                perPage: 10
+            },
+            add: {
+                addButtonContent: '<i class="ion-ios-plus-outline"></i>',
+                createButtonContent: '<i class="ion-checkmark"></i>',
+                cancelButtonContent: '<i class="ion-close"></i>',
+            },
+            edit: {
+                editButtonContent: '<i class="ion-edit"></i>',
+                saveButtonContent: '<i class="ion-checkmark"></i>',
+                cancelButtonContent: '<i class="ion-close"></i>',
+            },
+            columns: {
+                login: {
+                    title: 'login',
+                    type: 'string'
+                },
+                email: {
+                    title: 'e-mail',
+                    type: 'string'
+                },
+                privileges_string: {
+                    title: 'oddíly',
+                    type: 'custom',
+                    renderComponent: TeamCell
+                }
+            }
+        };
 
-						resolve();
-					}, err => {
-						reject();
-					});
-				}));
-			});
-		} else {
-			toAdd = found;
-		}
+        this.settings.nationality = {
+            mode: 'external',
+            add: {
+                addButtonContent: '<i class="ion-ios-plus-outline"></i>',
+                createButtonContent: '<i class="ion-checkmark"></i>',
+                cancelButtonContent: '<i class="ion-close"></i>',
+            },
+            edit: {
+                editButtonContent: '<i class="ion-edit"></i>',
+                saveButtonContent: '<i class="ion-checkmark"></i>',
+                cancelButtonContent: '<i class="ion-close"></i>',
+            },
+            actions: {
+                columnTitle: "Úprava",
+                add: true,
+                edit: true,
+                delete: false
+            },
+            pager: {
+                perPage: 20
+            },
+            columns: {
+                name: {
+                    title: 'Název',
+                    type: 'string'
+                },
+                country_name: {
+                    title: 'Stát',
+                    type: 'string'
+                }
+            }
+        };
 
-		Promise.all(promises).then(() => {
-			let data = [];
+        this.settings.tournament = {
+            mode: "external",
+            actions: {
+                columnTitle: "Úprava",
+                add: true,
+                edit: true,
+                delete: true
+            },
+            pager: {
+                perPage: 20
+            },
+            add: {
+                addButtonContent: '<i class="ion-ios-plus-outline"></i>',
+                createButtonContent: '<i class="ion-checkmark"></i>',
+                cancelButtonContent: '<i class="ion-close"></i>',
+            },
+            edit: {
+                editButtonContent: '<i class="ion-edit"></i>',
+                saveButtonContent: '<i class="ion-checkmark"></i>',
+                cancelButtonContent: '<i class="ion-close"></i>',
+            },
+            delete: {
+                deleteButtonContent: '<i class="ion-trash-a"></i>',
+                confirmDelete: true
+            },
+            columns: {
+                name: {
+                    title: 'Název',
+                    type: 'string'
+                },
+                location: {
+                    title: 'Místo konání',
+                    type: 'string'
+                },
+                date: {
+                    title: 'Datum',
+                    type: 'string'
+                },
+                league: {
+                    title: 'Liga',
+                    type: 'string'
+                },
+                division: {
+                    title: 'Divize',
+                    type: 'string'
+                },
+                season: {
+                    title: 'Sezona',
+                    type: 'string'
+                }
+            }
+        };
 
-			data.push({
-				id: 'ID',
-				team: 'Oddil',
-				first_name: 'Jmeno',
-				last_name: 'Prijmeni',
-				sex: 'Pohlavi',
-				birth_date: 'Datum narozeni',
-				email: 'Email'
-			});
+        this.settings.team = {
+            mode: "external",
+            actions: {
+                columnTitle: "Úprava",
+                add: true,
+                edit: true,
+                delete: false
+            },
+            pager: {
+                perPage: 20
+            },
+            add: {
+                addButtonContent: '<i class="ion-ios-plus-outline"></i>',
+                createButtonContent: '<i class="ion-checkmark"></i>',
+                cancelButtonContent: '<i class="ion-close"></i>',
+            },
+            edit: {
+                editButtonContent: '<i class="ion-edit"></i>',
+                saveButtonContent: '<i class="ion-checkmark"></i>',
+                cancelButtonContent: '<i class="ion-close"></i>',
+            },
+            columns: {
+                name: {
+                    title: 'Název',
+                    type: 'string'
+                },
+                city: {
+                    title: 'Město',
+                    type: 'string'
+                },
+                www: {
+                    title: 'Web',
+                    type: 'string'
+                },
+                email: {
+                    title: 'E-mail',
+                    type: 'string'
+                },
+                founded_at: {
+                    title: 'Založeno',
+                    type: 'custom',
+                    renderComponent: DateCell
+                }
+            }
+        };
+    }
 
-			toAdd.forEach((el: Player) => {
-				data.push({
-					id: el.id,
-					team: this.playerAtTeam.transform(el, true),
-					first_name: el.first_name,
-					last_name: el.last_name,
-					sex: (el.sex ? el.sex : ''),
-					birth_date: (el.birth_date ? el.birth_date : ''),
-					email: (el.email ? el.email : '')
-				});
-			});
+    private convertPrivileges(val: any): any[] {
+        var data = [];
+        val.privileges_string = "";
+        val.privileges.forEach(x => {
+            if (typeof x == "object" && x.entity_id) {
+                data.push(x.entity_id);
+            } else {
+                data.push(x);
+            }
+        });
+        val.privileges_string = data.join(",");
+        return val;
+    }
 
-			new Angular2Csv(data, 'CALD export', { showLabels: true });
-			this.sending = false;
-		});
-	}
 
-	public export(): void {
-		this.exportForm = this.fb.group({
-			sex: [],
-			birth_date_comparator: [],
-			birth_date: [],
-			active_in_seasons_allowed: [],
-			active_in_seasons: []
-		});
+    public exportByFilter(): void {
+        this.sending = true;
+        let cond = this.exportForm.value;
+        let found = this.server.getType("player").filter((pl: Player) => {
+            if (cond.sex) {
+                if (pl.sex != cond.sex) return false;
+            }
 
-		this.exportForm.patchValue({ sex: '', birth_date_comparator: '==', active_in_seasons: [this.seasons[this.seasons.length - 1].id] });
-		this.type = "export";
-	}
+            let ok = false;
+            if (cond.birth_date && pl.birth_date) {
+                let year = parseInt(pl.birth_date.split("-")[0]);
+                switch (cond.birth_date_comparator) {
+                    case "<=":
+                        ok = year <= cond.birth_date;
+                        break;
+                    case ">=":
+                        ok = year >= cond.birth_date;
+                        break;
+                    case "==":
+                        ok = cond.birth_date == year;
+                        break;
+                    case ">":
+                        ok = year > cond.birth_date;
+                        break;
+                    case "<":
+                        ok = year < cond.birth_date;
+                        break;
+                }
+            } else {
+                return true;
+            }
+            return ok;
+        });
 
-	public user(): void {
-		this.teamsOptions = [];
-		this.server.getType("team").forEach(el => {
-			this.teamsOptions.push({ value: el.id, title: el.name });
-		});
-		this.source.user = new LocalDataSource();
-		this.source.user.setSort([{ field: 'teams', direction: 'asc' }]);
-		this.server.get("list/user", { 'extend': true }).subscribe(val => {
-			val.forEach(el => {
-				el = this.convertPrivileges(el);
-			});
-			this.source.user.load(val);
-		});
+        let promises = [];
+        let player_history = {};
+        let toAdd = [];
 
-		this.userForm = this.fb.group({
-			'id': [''],
-			'password': [''],
-			'email': ['', [EmailValidator, Validators.required]],
-			'login': ['', Validators.required],
-			'privileges': ['']
-		});
-		this.type = "user";
-	}
+        if (this.exportForm.value.active_in_seasons_allowed) {
+            found.forEach((el: Player) => {
+                promises.push(new Promise((resolve, reject) => {
+                    this.server.get(['player', el.id, "history"].join("/")).subscribe(val => {
+                        let notActive = false;
+                        this.exportForm.value.active_in_seasons.forEach(s => {
+                            let season = val.seasons.find(ses => {
+                                return (ses.season.id == s);
+                            });
+                            if (season) {
+                                if (season.tournaments.length == 0) {
+                                    notActive = true;
+                                }
+                            } else {
+                                notActive = true;
+                            }
+                        });
+                        if (notActive == false) {
+                            toAdd.push(el);
+                        } else {
+                        }
 
-	public team(): void {
-		this.source.team = new LocalDataSource();
-		this.source.team.setSort([{ field: 'name', direction: 'asc' }]);
-		this.source.team.load(this.server.getType("team"));
-		this.teamForm = this.fb.group({
-			'id': [''],
-			'name': ['', Validators.required],
-			'founded_at': [''],
-			'city': [''],
-			'www': [''],
-			'email': ['', EmailValidator]
-		});
-		this.type = "team";
-	}
+                        resolve();
+                    }, err => {
+                        resolve();
+                    });
+                }));
+            });
+        } else {
+            toAdd = found;
+        }
 
-	public tournament(create?: boolean): void {
-		this.source.tournament = new LocalDataSource();
-		this.source.tournament.setSort([{ field: 'date', direction: 'desc' }]);
+        Promise.all(promises).then(() => {
+            let data = [];
 
-		let data = [];
+            data.push({
+                id: 'ID',
+                team: 'Oddil',
+                first_name: 'Jmeno',
+                last_name: 'Prijmeni',
+                sex: 'Pohlavi',
+                birth_date: 'Datum narozeni',
+                email: 'Email'
+            });
 
-		this.server.get("list/tournament").subscribe(val => {
-			val.forEach((el: Tournament) => {
-				var extended = this.server.getType("tournamentExtended", el.id, null, 'tournament_id', true);
-				el['league'] = [];
-				el['division'] = [];
+            toAdd.forEach((el: Player) => {
+                data.push({
+                    id: el.id,
+                    team: this.playerAtTeam.transform(el, true),
+                    first_name: el.first_name,
+                    last_name: el.last_name,
+                    sex: (el.sex ? el.sex : ''),
+                    birth_date: (el.birth_date ? el.birth_date : ''),
+                    email: (el.email ? el.email : '')
+                });
+            });
 
-				extended.forEach(ex => {
-					el['league'] = this.server.getType("league", ex['league_id'], "name");
-					el['division'].push(this.server.getType("division", ex['division_id'], "name"));
-				});
+            new Angular2Csv(data, 'CALD export', {showLabels: true});
+            this.sending = false;
+        });
+    }
 
-				el['division'] = el['division'].join(", ");
-				el['season'] = this.server.getType("season", el['season_id'], "name");
-				el['date'] = el['date'].split(" ")[0];
-				data.push(el);
-			});
-			this.source.tournament.load(data);
-		});
+    public nationality(): void {
+        this.nationalityForm = this.fb.group({
+            id: [],
+            name: ['', Validators.required],
+            country_name: ['', Validators.required]
+        });
 
-		this.tournamentForm = this.fb.group({
-			'id': [''],
-			'name': ['Test', Validators.required],
-			'date': ['', Validators.required],
-			'location': ['Lokace'],
-			'duration': ['2'],
-			'league_ids': ['', Validators.required],
-			'season_id': [''],
-			'division_ids': ['', Validators.required]
-		});
+        this.source.nationality = new LocalDataSource();
+        this.source.nationality.setSort([{field: 'name', direction: 'asc'}]);
+        this.source.nationality.load(this.server.getType("nationality"));
+        this.type = "nationality";
+    }
 
-		this.type = "tournament";
-	}
+    public export(): void {
+        this.exportForm = this.fb.group({
+            sex: [],
+            birth_date_comparator: [],
+            birth_date: [],
+            active_in_seasons_allowed: [],
+            active_in_seasons: []
+        });
 
-	ngOnInit(): void {
-		this.seasons = this.server.getType("season");
-		this.initSettings();
-		this.tournament();
-	}
+        this.exportForm.patchValue({
+            sex: '',
+            birth_date_comparator: '==',
+            active_in_seasons: [this.seasons[this.seasons.length - 1].id]
+        });
+        this.type = "export";
+    }
+
+    public user(): void {
+        this.teamsOptions = [];
+        this.server.getType("team").forEach(el => {
+            this.teamsOptions.push({value: el.id, title: el.name});
+        });
+        this.source.user = new LocalDataSource();
+        this.source.user.setSort([{field: 'teams', direction: 'asc'}]);
+        this.server.get("list/user", {'extend': true}).subscribe(val => {
+            val.forEach(el => {
+                el = this.convertPrivileges(el);
+            });
+            this.source.user.load(val);
+        });
+
+        this.userForm = this.fb.group({
+            'id': [''],
+            'password': [''],
+            'email': ['', [EmailValidator, Validators.required]],
+            'login': ['', Validators.required],
+            'privileges': ['']
+        });
+        this.type = "user";
+    }
+
+    public team(): void {
+        this.source.team = new LocalDataSource();
+        this.source.team.setSort([{field: 'name', direction: 'asc'}]);
+        this.source.team.load(this.server.getType("team"));
+        this.teamForm = this.fb.group({
+            'id': [''],
+            'name': ['', Validators.required],
+            'founded_at': [''],
+            'city': [''],
+            'www': [''],
+            'email': ['', EmailValidator]
+        });
+        this.type = "team";
+    }
+
+    public tournament(create?: boolean): void {
+        this.source.tournament = new LocalDataSource();
+        this.source.tournament.setSort([{field: 'date', direction: 'desc'}]);
+
+        let data = [];
+
+        this.server.get("list/tournament").subscribe(val => {
+            val.forEach((el: Tournament) => {
+                console.log(el);
+                var extended = this.server.getType("tournamentExtended", el.id, null, 'tournament_id', true);
+                el['league'] = [];
+                el['division'] = [];
+
+                extended.forEach(ex => {
+                    el['league'] = this.server.getType("league", ex['league_id'], "name");
+                    el['division'].push(this.server.getType("division", ex['division_id'], "name"));
+                });
+
+                el['division'] = el['division'].join(", ");
+                el['season'] = this.server.getType("season", el['season_id'], "name");
+                el['date'] = el['date'].split(" ")[0];
+                data.push(el);
+            });
+            this.source.tournament.load(data);
+        });
+
+        this.tournamentForm = this.fb.group({
+            'id': [''],
+            'name': ['Test', Validators.required],
+            'date': ['', Validators.required],
+            'location': ['Lokace'],
+            'duration': ['2'],
+            'league_ids': ['', Validators.required],
+            'season_id': [''],
+            'division_ids': ['', Validators.required]
+        });
+
+        this.type = "tournament";
+    }
+
+    ngOnInit(): void {
+        this.seasons = this.server.getType("season");
+        this.initSettings();
+        this.tournament();
+    }
 
 }
